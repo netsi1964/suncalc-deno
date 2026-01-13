@@ -1,0 +1,82 @@
+name: Build Neutralino App
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Fetch Neutralino Client Libraries (CRITICAL FIX)
+        run: npx @neutralinojs/neu update
+
+      - name: Build Standalone Neutralino Executable
+        run: npx @neutralinojs/neu build --release --embed-resources
+
+      # Neutralino's --macos-bundle is fundamentally broken and produces unusable .app bundles.
+      # We MUST construct the standard .app hierarchy ourselves.
+      - name: Manually Assemble macOS .app Bundle Structure (CRITICAL FIX)
+        run: |
+          APP_NAME="SunCalc"
+          mkdir -p "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/MacOS"
+          mkdir -p "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/Resources"
+
+          # Move universal binary
+          mv "dist/$APP_NAME/${APP_NAME}-mac_universal" "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/MacOS/$APP_NAME-macOS"
+          chmod +x "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/MacOS/$APP_NAME-macOS"
+
+          # Create Info.plist
+          cat <<EOF > "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/Info.plist"
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleExecutable</key>
+            <string>$APP_NAME-macOS</string>
+            <key>CFBundleIdentifier</key>
+            <string>com.netsi.suncalc</string>
+            <key>CFBundleName</key>
+            <string>$APP_NAME</string>
+            <key>CFBundleShortVersionString</key>
+            <string>1.0.0</string>
+            <key>NSHighResolutionCapable</key>
+            <true/>
+          </dict>
+          </plist>
+          EOF
+
+      # Apple Silicon AMFI strict code signing requires at least an ad-hoc signature
+      # after the HTML/CSS resources were embedded into the executable in a prior step.
+      - name: Ad-hoc Sign App to Prevent SIGKILL (CRITICAL FIX)
+        run: |
+          APP_NAME="SunCalc"
+          codesign --force --deep --sign - "dist/$APP_NAME/$APP_NAME-macOS.app"
+
+      # Using 'zip' on macOS/Linux strips the execution rights (+x) from the binary.
+      # We MUST use ditto to preserve Unix attributes.
+      - name: Compress App Bundle with Ditto (CRITICAL FIX)
+        run: |
+          cd dist/SunCalc
+          ditto -c -k --keepParent SunCalc-macOS.app SunCalc-macOS.zip
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/SunCalc/SunCalc-macOS.zip

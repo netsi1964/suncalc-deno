@@ -1,0 +1,36 @@
+{
+  "applicationId": "com.netsi.suncalc",
+  "version": "1.0.0",
+  "defaultMode": "window",
+  "enableServer": true,
+  "enableNativeAPI": true,
+  "tokenSecurity": "one-time",
+  "logging": {
+    "enabled": true,
+    "writeToLogFile": false
+  },
+  "modes": {
+    "window": {
+      "title": "SunCalc",
+      "width": 1280,
+      "height": 900,
+      "minWidth": 900,
+      "minHeight": 700,
+      "enableInspector": true,
+      "exitProcessOnClose": true
+    }
+  },
+  "cli": {
+    "binaryName": "SunCalc",
+    "resourcesPath": "/resources/",
+    "extensionsPath": "/extensions/",
+    "clientLibrary": "/resources/neutralino.js",
+    "frontendLibrary": {
+      "patchFile": "/index.html"
+    },
+    "binaryVersion": "6.5.0",
+    "clientVersion": "6.5.0"
+  },
+  "documentRoot": "/resources/",
+  "url": "/"
+}

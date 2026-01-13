@@ -1,0 +1,15 @@
+node_modules/
+package-lock.json
+playwright-report/
+test-results/
+.DS_Store
+
+release/
+
+# Neutralino
+/bin/
+/dist/
+resources/neutralino.js
+resources/*.js
+resources/*.html
+resources/neutralino/

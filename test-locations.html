@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sunrise Comparison</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+</head>
+<body>
+  <h1>Sunrise/Sunset for different locations near Århus</h1>
+  <div id="output"></div>
+  
+  <script>
+    const locations = [
+      { name: 'Skødstrup (app default)', lat: 56.2635, lng: 10.3041 },
+      { name: 'Århus centrum', lat: 56.1629, lng: 10.2039 },
+      { name: 'Mellem Århus og Skødstrup', lat: 56.2132, lng: 10.2540 },
+    ];
+    
+    const dateStr = '2026-01-15';
+    const noonUTC = new Date(dateStr + 'T12:00:00Z');
+    
+    let html = `<p><strong>Date:</strong> ${dateStr} (15. januar 2026)</p>`;
+    html += `<p><strong>Input to SunCalc:</strong> ${noonUTC.toISOString()}</p><hr>`;
+    
+    html += '<table border="1" cellpadding="10"><tr><th>Location</th><th>Latitude</th><th>Longitude</th><th>Sunrise</th><th>Sunset</th></tr>';
+    
+    locations.forEach(loc => {
+      const times = SunCalc.getTimes(noonUTC, loc.lat, loc.lng);
+      const sunrise = times.sunrise.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false,
+        timeZone: 'Europe/Copenhagen'
+      });
+      const sunset = times.sunset.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false,
+        timeZone: 'Europe/Copenhagen'
+      });
+      
+      html += `<tr>
+        <td>${loc.name}</td>
+        <td>${loc.lat}</td>
+        <td>${loc.lng}</td>
+        <td><strong>${sunrise}</strong></td>
+        <td><strong>${sunset}</strong></td>
+      </tr>`;
+    });
+    
+    html += '</table><hr>';
+    html += '<h3>Expected values:</h3>';
+    html += '<p>🌐 Online service: 08:42 / 16:16</p>';
+    html += '<p>📅 Google Calendar: 08:29 / 16:09</p>';
+    html += '<p>📱 Your app: 07:43 / 15:15 ❌</p>';
+    
+    document.getElementById('output').innerHTML = html;
+  </script>
+</body>
+</html>

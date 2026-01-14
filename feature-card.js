@@ -52,7 +52,7 @@ class FeatureCard extends HTMLElement {
           overflow: hidden;
           transition: box-shadow 0.2s;
           width: 20vw;
-          min-width: 300px;
+          min-width: 290px;
           max-width: 400px;
           box-sizing: border-box;
         }

@@ -5,9 +5,10 @@ A Deno-based web application that displays real-time sun and moon information us
 ## Features
 
 - 🌍 **Auto Location Detection** - Detects your location via IP geolocation
+- 🗺️ **Interactive Map** - Drag the marker to change location in real-time
 - ☀️ **Sun Data** - Sunrise, sunset, solar noon, and daylight duration
 - 🌙 **Moon Data** - Moonrise and moonset times
-- 🗺️ **Interactive Map** - Shows your location on a Mapbox static map
+- 🌐 **Multi-language Support** - Danish, English, German, and Chinese
 - 📊 **24-Hour Graph** - Visual timeline of day/night/twilight phases
 - 📱 **Responsive Design** - Works on desktop and mobile devices
 
@@ -18,12 +19,11 @@ A Deno-based web application that displays real-time sun and moon information us
 - **APIs**:
   - [SunCalc.js](https://github.com/mourner/suncalc) - Astronomical calculations
   - [IPInfo](https://ipinfo.io) - Location detection
-  - [Mapbox Static API](https://docs.mapbox.com/api/maps/static-images/) - Map visualization
+  - [Leaflet](https://leafletjs.com/) - Interactive maps (OpenStreetMap tiles)
 
 ## Prerequisites
 
 - [Deno](https://deno.land/) installed (v1.x or higher)
-- Mapbox API token (get one free at [mapbox.com](https://www.mapbox.com/))
 
 ## Setup
 
@@ -34,19 +34,20 @@ A Deno-based web application that displays real-time sun and moon information us
    ```
 
 2. Add your Mapbox token:
-   - Open `sun-moon-info.js`
-   - Replace `YOUR_MAPBOX_TOKEN` with your actual token
-
-3. Run the application:
+   Run the application:
    ```bash
    deno run --allow-net --allow-read main.ts
    ```
 
-4. Open your browser to:
+3. Open your browser to:
    ```
    http://localhost:8000
    ```
 
+4. **Use the app:**
+   - Select your language from the dropdown (🌐)
+   - The map will auto-detect your location
+   - Drag the marker to change location and see updated sun/moon times
 ## Development
 
 ### Project Structure
@@ -55,6 +56,8 @@ A Deno-based web application that displays real-time sun and moon information us
 suncalc-deno/
 ├── main.ts              # Deno HTTP server
 ├── index.html           # Entry HTML page
+├── language-selector.js # Language selector component
+├── translations.js      # i18n translations (da, en, de, zh)
 ├── sun-moon-info.js     # Web Component (custom element)
 ├── PRD.md               # Product Requirements Document
 ├── AGENTS.md            # Implementation rules
@@ -81,18 +84,21 @@ The app uses a custom HTML element:
 
 If no attributes are provided, the component auto-detects location via IP.
 
-## How It Works
-
-1. **Location Detection**: On load, the app fetches your location using IPInfo API
-2. **Data Calculation**: SunCalc.js calculates sun and moon times for your coordinates
-3. **Rendering**: The Web Component displays:
+## HoInteractive Map**: Leaflet.js displays an OpenStreetMap with a draggable marker
+3. **Real-time Updates**: Drag the marker to instantly update sun/moon calculations
+4. **Data Calculation**: SunCalc.js calculates sun and moon times for your coordinates
+5. **Multi-language**: Choose from Danish, English, German, or Chinese
+6. **Rendering**: The Web Component displays:
    - Location name with 📍 emoji
    - Sun times (sunrise, sunset, solar noon, daylight duration)
    - Moon times (moonrise, moonset)
+   - Interactive Leaflet map with draggable marker
+   - 24-hour vertical bar graph showing day/night/twilight phases
+7  - Moon times (moonrise, moonset)
    - Mapbox static map centered on your location
    - 24-hour vertical bar graph showing day/night/twilight phases
 4. **Responsive Layout**: 
-   - Desktop (>768px): 3-column grid layout
+   -OpenStreetMap**: Free tile service (please respect usage policy)
    - Mobile (<768px): Stacked vertical layout
 
 ## API Limits
@@ -116,7 +122,8 @@ MIT
 ## Contributing
 
 This project follows the implementation rules in [AGENTS.md](AGENTS.md). Please read them before contributing.
-
+Leaflet](https://leafletjs.com) for interactive maps
+- [OpenStreetMap](https://www.openstreetmap.org) contributors for map tiles
 ## Acknowledgments
 
 - [SunCalc](https://github.com/mourner/suncalc) by Vladimir Agafonkin

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sun & Moon Info</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Segoe UI, Tahoma, Verdana, sans-serif;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="page-title">☀️ Sun & Moon Information 🌙</h1>
+  
+  <!-- Language Selector -->
+  <language-selector style="display: none;"></language-selector>
+  
+  <script>
+    // Update page title on language change
+    window.addEventListener('languagechange', () => {
+      document.getElementById('page-title').textContent = window.t('title');
+    });
+    // Set initial title
+    window.addEventListener('load', () => {
+      document.getElementById('page-title').textContent = window.t('title');
+    });
+  </script>
+  
+  <!-- Custom Web Component - will be defined in sun-moon-info.js -->
+  <sun-moon-info></sun-moon-info>
+
+  <!-- Load SunCalc from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+  
+  <!-- Load Leaflet from CDN -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Load translations -->
+  <script src="translations.js"></script>
+  
+  <!-- Load custom element components (in dependency order) -->
+  <script type="module" src="custom-tooltip.js"></script>
+  <script type="module" src="feature-toggle.js"></script>
+  <script type="module" src="tab-group.js"></script>
+  <script type="module" src="timeline-graph.js"></script>
+  <script type="module" src="feature-card.js"></script>
+  <script type="module" src="date-picker.js"></script>
+  <script type="module" src="language-selector.js"></script>
+  <script type="module" src="sun-moon-info.js"></script>
+</body>
+</html>

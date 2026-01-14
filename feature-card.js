@@ -51,10 +51,9 @@ class FeatureCard extends HTMLElement {
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           overflow: hidden;
           transition: box-shadow 0.2s;
-          width: 20vw;
-          min-width: 290px;
-          max-width: 400px;
           box-sizing: border-box;
+          flex: 1;
+          min-width: 250px;
         }
 
         :host(:hover) {

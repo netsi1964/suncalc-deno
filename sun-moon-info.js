@@ -789,10 +789,17 @@ class SunMoonInfo extends HTMLElement {
           }</td>
         </tr>
         <tr>
-          <td class="info-label">${window.t("daylightDiff")}</td>
-          <td class="info-value" style="font-size: 0.85em; line-height: 1.4;">
-            ${this.sunData ? `<div>${window.t("fromShortest")}: ${this.sunData.diffFromShortest}</div><div>${window.t("fromLongest")}: ${this.sunData.diffFromLongest}</div>` : "--"}
+          <td class="info-label" colspan="2" style="text-align: center; font-weight: bold; padding-top: 12px;">
+            ${window.t("daylightDiff")}
           </td>
+        </tr>
+        <tr>
+          <td class="info-label">${window.t("fromShortest")}</td>
+          <td class="info-value">${this.sunData ? this.sunData.diffFromShortest : "--"}</td>
+        </tr>
+        <tr>
+          <td class="info-label">${window.t("fromLongest")}</td>
+          <td class="info-value">${this.sunData ? this.sunData.diffFromLongest : "--"}</td>
         </tr>
       </table>
     `;
@@ -879,10 +886,17 @@ class SunMoonInfo extends HTMLElement {
           }</td>
         </tr>
         <tr>
-          <td class="info-label">${window.t("daylightDiff")}</td>
-          <td class="info-value" style="font-size: 0.85em; line-height: 1.4;">
-            ${this.sunData ? `<div>${window.t("fromShortest")}: ${this.sunData.diffFromShortest}</div><div>${window.t("fromLongest")}: ${this.sunData.diffFromLongest}</div>` : "--"}
+          <td class="info-label" colspan="2" style="text-align: center; font-weight: bold; padding-top: 12px;">
+            ${window.t("daylightDiff")}
           </td>
+        </tr>
+        <tr>
+          <td class="info-label">${window.t("fromShortest")}</td>
+          <td class="info-value">${this.sunData ? this.sunData.diffFromShortest : "--"}</td>
+        </tr>
+        <tr>
+          <td class="info-label">${window.t("fromLongest")}</td>
+          <td class="info-value">${this.sunData ? this.sunData.diffFromLongest : "--"}</td>
         </tr>
       </table>
       

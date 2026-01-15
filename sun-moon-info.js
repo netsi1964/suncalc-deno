@@ -194,7 +194,13 @@ class SunMoonInfo extends HTMLElement {
       // Attach share button event listener
       const shareBtn = this.shadowRoot.querySelector("#share-btn");
       if (shareBtn) {
-        shareBtn.addEventListener("click", async () => {
+        // Remove old listener if exists
+        if (this.shareBtnHandler) {
+          shareBtn.removeEventListener("click", this.shareBtnHandler);
+        }
+        
+        // Create and store new handler
+        this.shareBtnHandler = async () => {
           const url = window.location.href;
           try {
             await navigator.clipboard.writeText(url);
@@ -211,7 +217,9 @@ class SunMoonInfo extends HTMLElement {
             // Fallback: select and copy
             prompt(window.t("shareTitle") + ":", url);
           }
-        });
+        };
+        
+        shareBtn.addEventListener("click", this.shareBtnHandler);
       }
     }, 100);
   }

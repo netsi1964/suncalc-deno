@@ -57,6 +57,7 @@
 - [x] Create test for Moon Information feature toggle functionality (68 tests total)
 - [x] Add missing feature description translations (moonPhaseDesc, sunElevationDesc, goldenHourDesc, compassDesc, uvIndexDesc) for all languages
 - [x] Fix timezone issue causing incorrect sunrise/sunset times (now uses noon UTC for SunCalc calculations)
+- [x] Fix timezone region matching order - Copenhagen was incorrectly identified as London timezone
 
 ## 💡 Future Ideas
 See [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for long-term enhancements.

@@ -113,6 +113,7 @@ class SunMoonInfo extends HTMLElement {
           if (state.lng) this.lng = state.lng;
           if (state.zoom) this.zoom = state.zoom;
           if (state.currentDate) this.currentDate = new Date(state.currentDate);
+          if (state.timezoneName) this.timezoneName = state.timezoneName;
           if (state.features)
             this.features = { ...this.features, ...state.features };
           if (state.featureTabs)
@@ -131,6 +132,7 @@ class SunMoonInfo extends HTMLElement {
       lng: this.lng,
       zoom: this.zoom,
       currentDate: this.currentDate.toISOString(),
+      timezoneName: this.timezoneName, // Save timezone to avoid re-fetching
       features: this.features,
       featureTabs: this.featureTabs,
     };
@@ -696,20 +698,21 @@ class SunMoonInfo extends HTMLElement {
   estimateTimezoneFromCoordinates(lat, lng) {
     // Major timezone regions (simplified)
     // Format: [minLat, maxLat, minLng, maxLng, timezone]
+    // IMPORTANT: More specific regions must come BEFORE broader ones!
     const timezoneRegions = [
+      // Europe - specific regions first
+      [55, 70, 8, 14, 'Europe/Copenhagen'], // Denmark, Southern Sweden
+      [54, 72, 10, 32, 'Europe/Stockholm'], // Sweden, Finland
+      [47, 55, 5, 15, 'Europe/Berlin'], // Germany, Poland
+      [40, 72, 5, 16, 'Europe/Paris'], // France, Belgium
+      [36, 72, -10, 30, 'Europe/London'], // UK, Ireland, Portugal (broader region)
+      
       // North America
       [24, 50, -125, -66, 'America/New_York'],
       [24, 50, -125, -95, 'America/Chicago'],
       [24, 50, -125, -110, 'America/Denver'],
       [24, 50, -125, -114, 'America/Los_Angeles'],
       [49, 84, -141, -52, 'America/Toronto'],
-      
-      // Europe
-      [36, 72, -10, 30, 'Europe/London'],
-      [40, 72, 5, 16, 'Europe/Paris'],
-      [47, 55, 5, 15, 'Europe/Berlin'],
-      [54, 72, 10, 32, 'Europe/Stockholm'],
-      [55, 70, 8, 14, 'Europe/Copenhagen'],
       
       // Asia
       [18, 54, 73, 135, 'Asia/Shanghai'],

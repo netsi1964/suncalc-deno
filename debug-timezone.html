@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debug Timezone</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+</head>
+<body>
+  <h1>Debug: Timezone Problem</h1>
+  <div id="output"></div>
+  
+  <script>
+    const lat = 56.2635;
+    const lng = 10.3041;
+    const dateStr = '2026-01-15';
+    const noonUTC = new Date(dateStr + 'T12:00:00Z');
+    
+    console.log('Input date:', noonUTC.toString());
+    console.log('Input date ISO:', noonUTC.toISOString());
+    
+    const times = SunCalc.getTimes(noonUTC, lat, lng);
+    
+    console.log('Sunrise object:', times.sunrise);
+    console.log('Sunrise ISO (UTC):', times.sunrise.toISOString());
+    console.log('Sunrise toString:', times.sunrise.toString());
+    
+    // Test different formatting methods
+    const sunrise1 = times.sunrise.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: false 
+    });
+    
+    const sunrise2 = times.sunrise.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: false,
+      timeZone: 'Europe/Copenhagen'
+    });
+    
+    const sunrise3 = times.sunrise.toLocaleTimeString('da-DK', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: false,
+      timeZone: 'Europe/Copenhagen'
+    });
+    
+    const output = document.getElementById('output');
+    output.innerHTML = `
+      <p><strong>System timezone:</strong> ${Intl.DateTimeFormat().resolvedOptions().timeZone}</p>
+      <p><strong>Sunrise UTC:</strong> ${times.sunrise.toISOString()}</p>
+      <hr>
+      <p><strong>No timezone specified:</strong> ${sunrise1}</p>
+      <p><strong>With Europe/Copenhagen:</strong> ${sunrise2}</p>
+      <p><strong>With da-DK + Copenhagen:</strong> ${sunrise3}</p>
+      <hr>
+      <h3 style="color: green;">Expected: 08:29 or 08:42</h3>
+      <h3 style="color: red;">App shows: 07:43</h3>
+    `;
+  </script>
+</body>
+</html>

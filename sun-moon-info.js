@@ -190,8 +190,13 @@ class SunMoonInfo extends HTMLElement {
           window.setLanguage(e.target.value);
         });
       }
+    }, 100);
+  }
 
-      // Attach share button event listener
+  // Attach location controls event listeners
+  attachLocationControls() {
+    setTimeout(() => {
+      // Share button
       const shareBtn = this.shadowRoot.querySelector("#share-btn");
       if (shareBtn) {
         // Remove old listener if exists
@@ -221,12 +226,7 @@ class SunMoonInfo extends HTMLElement {
         
         shareBtn.addEventListener("click", this.shareBtnHandler);
       }
-    }, 100);
-  }
 
-  // Attach location controls event listeners
-  attachLocationControls() {
-    setTimeout(() => {
       // Today button - reset to current date
       const todayBtn = this.shadowRoot.querySelector("#today-btn");
       if (todayBtn) {

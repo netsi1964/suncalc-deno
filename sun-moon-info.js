@@ -971,8 +971,16 @@ class SunMoonInfo extends HTMLElement {
 
     // Calculate difference from shortest and longest days
     const year = this.currentDate.getFullYear();
-    const winterSolstice = new Date(year, 11, 21); // December 21
-    const summerSolstice = new Date(year, 5, 21); // June 21
+    const month = this.currentDate.getMonth(); // 0-11
+    
+    // Determine which solstice year to use
+    // If we're in Jan-Jun, use previous year's winter solstice and current year's summer solstice
+    // If we're in Jul-Dec, use current year's summer solstice and current year's winter solstice
+    const winterSolsticeYear = month < 6 ? year - 1 : year;
+    const summerSolsticeYear = year;
+    
+    const winterSolstice = new Date(winterSolsticeYear, 11, 21); // December 21
+    const summerSolstice = new Date(summerSolsticeYear, 5, 21); // June 21
 
     // Get daylight duration for winter solstice (shortest day)
     const winterTimes = SunCalc.getTimes(winterSolstice, this.lat, this.lng);

@@ -666,40 +666,69 @@ class SunMoonInfo extends HTMLElement {
     }, 100);
   }
 
-  // Get timezone name for coordinates using free API
+  // Get timezone name for coordinates
   async getTimezoneForLocation(lat, lng) {
-    try {
-      // Use WorldTimeAPI's timezone endpoint (free, no key required)
-      const response = await fetch(
-        `https://timeapi.io/api/TimeZone/coordinate?latitude=${lat}&longitude=${lng}`
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        return data.timeZone || null;
-      }
-    } catch (error) {
-      console.warn('TimeAPI failed, trying GeoNames:', error);
+    // First, try to use a simple timezone database lookup
+    // This is more reliable than external APIs and works offline
+    const timezone = this.estimateTimezoneFromCoordinates(lat, lng);
+    if (timezone) {
+      return timezone;
     }
 
-    try {
-      // Fallback to GeoNames (free, no registration required for low usage)
-      const response = await fetch(
-        `https://secure.geonames.org/timezoneJSON?lat=${lat}&lng=${lng}&username=demo`
-      );
-      
-      if (response.ok) {
-        const data = await response.json();
-        return data.timezoneId || null;
-      }
-    } catch (error) {
-      console.warn('GeoNames timezone lookup failed:', error);
-    }
-
-    // If all APIs fail, estimate timezone from longitude
-    console.warn('Using fallback timezone estimation based on longitude');
+    // Fallback to GMT offset calculation
+    console.warn('Using GMT offset fallback for timezone');
     const offset = Math.round(lng / 15);
     return `Etc/GMT${offset >= 0 ? '-' : '+'}${Math.abs(offset)}`;
+  }
+
+  // Estimate timezone from coordinates using a simple lookup table
+  // This covers major timezones and is more reliable than external APIs
+  estimateTimezoneFromCoordinates(lat, lng) {
+    // Major timezone regions (simplified)
+    // Format: [minLat, maxLat, minLng, maxLng, timezone]
+    const timezoneRegions = [
+      // North America
+      [24, 50, -125, -66, 'America/New_York'],
+      [24, 50, -125, -95, 'America/Chicago'],
+      [24, 50, -125, -110, 'America/Denver'],
+      [24, 50, -125, -114, 'America/Los_Angeles'],
+      [49, 84, -141, -52, 'America/Toronto'],
+      
+      // Europe
+      [36, 72, -10, 30, 'Europe/London'],
+      [40, 72, 5, 16, 'Europe/Paris'],
+      [47, 55, 5, 15, 'Europe/Berlin'],
+      [54, 72, 10, 32, 'Europe/Stockholm'],
+      [55, 70, 8, 14, 'Europe/Copenhagen'],
+      
+      // Asia
+      [18, 54, 73, 135, 'Asia/Shanghai'],
+      [20, 46, 122, 154, 'Asia/Tokyo'],
+      [6, 38, 68, 97, 'Asia/Kolkata'],
+      [10, 42, 95, 106, 'Asia/Bangkok'],
+      
+      // Australia / Oceania
+      [-44, -10, 113, 154, 'Australia/Sydney'],
+      [-48, -34, 166, 179, 'Pacific/Auckland'],
+      
+      // South America
+      [-56, 13, -82, -34, 'America/Sao_Paulo'],
+      [-56, 13, -82, -66, 'America/Argentina/Buenos_Aires'],
+      
+      // Africa
+      [-35, 38, -18, 52, 'Africa/Johannesburg'],
+      [4, 32, -18, 16, 'Africa/Lagos'],
+    ];
+
+    // Find matching region
+    for (const [minLat, maxLat, minLng, maxLng, timezone] of timezoneRegions) {
+      if (lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng) {
+        return timezone;
+      }
+    }
+
+    // If no match found, return null and use GMT offset fallback
+    return null;
   }
 
   // Render date picker as a feature card

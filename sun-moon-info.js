@@ -996,9 +996,9 @@ class SunMoonInfo extends HTMLElement {
       longestDayMs = summerTimes.sunset - summerTimes.sunrise;
     }
 
-    // Calculate differences
+    // Calculate differences (in milliseconds)
     const diffFromShortest = currentDaylightMs - shortestDayMs;
-    const diffFromLongest = longestDayMs - currentDaylightMs;
+    const diffFromLongest = currentDaylightMs - longestDayMs; // Negative because current day is shorter
 
     // Format differences
     const formatDiff = (ms) => {
@@ -1006,11 +1006,16 @@ class SunMoonInfo extends HTMLElement {
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
       const sign = ms >= 0 ? '+' : '-';
+      
+      // Skip hours if 0
+      if (hours === 0) {
+        return `${sign}${minutes}${window.t("minuteAbbr")}`;
+      }
       return `${sign}${hours}${window.t("hourAbbr")} ${minutes}${window.t("minuteAbbr")}`;
     };
 
     this.sunData.diffFromShortest = formatDiff(diffFromShortest);
-    this.sunData.diffFromLongest = formatDiff(-diffFromLongest); // Negate to show as negative (day is shorter)
+    this.sunData.diffFromLongest = formatDiff(diffFromLongest);
 
     // Get moon times and phase
     const moonTimes = SunCalc.getMoonTimes(now, this.lat, this.lng);

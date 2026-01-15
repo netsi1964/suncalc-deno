@@ -47,6 +47,11 @@ const translations = {
     // Feature info
     sunInfoDesc: 'Viser vigtige soltider for din placering inklusiv solopgang, solnedgang og dagslængde. Forskellen i dagslængde sammenligner dagens længde med årets korteste dag (21. december) og længste dag (21. juni). I polarnætter eller midnatssol kan disse værdier variere ekstremt.',
     moonInfoDesc: 'Viser månens op- og nedgangstider for din placering. Månen kan være synlig både dag og nat afhængig af fasen.',
+    moonPhaseDesc: 'Aktuel månefase og belysningsprocent.',
+    sunElevationDesc: '24-timers diagram over solens højde.',
+    goldenHourDesc: 'Bedste tider for fotografering med gyldent lys.',
+    compassDesc: 'Solens position og retning.',
+    uvIndexDesc: 'UV-indeks og solbeskyttelsesanbefalinger.',
     moonPhaseInfo: 'Viser den aktuelle månefase med visuel repræsentation. Månen gennemgår 8 faser fra nymåne til fuldmåne og tilbage, med en cyklus på cirka 29,5 dage.',
     goldenHourInfo: 'Den gyldne time opstår to gange dagligt - kort efter solopgang og før solnedgang. I denne tid er solen lav på horisonten og skaber blødt, varmt, diffust lys perfekt til fotografering.',
     sunElevationInfo: 'Viser solens højdevinkel over horisonten gennem hele dagen. Grafen viser hvordan solen stiger, topper ved solens højdepunkt og går ned. Højere elevation betyder mere intens sollys.',
@@ -152,8 +157,11 @@ const translations = {
     
     // Feature info
     sunInfoDesc: 'Shows important sun times for your location including sunrise, sunset and daylight duration. Daylight difference compares today\'s length with the year\'s shortest day (December 21) and longest day (June 21). In polar nights or midnight sun these values can vary extremely.',
-    moonInfoDesc: 'Shows moon rise and set times for your location. The moon can be visible both day and night depending on its phase.',
-    moonPhaseInfo: 'Shows the current lunar phase with visual representation. The moon goes through 8 phases from New Moon to Full Moon and back, cycling approximately every 29.5 days.',
+    moonInfoDesc: 'Shows moon rise and set times for your location. The moon can be visible both day and night depending on its phase.',    moonPhaseDesc: 'Current moon phase and illumination percentage.',
+    sunElevationDesc: '24-hour sun elevation chart.',
+    goldenHourDesc: 'Best times for photography with golden light.',
+    compassDesc: 'Sun position and direction.',
+    uvIndexDesc: 'UV index and sun protection recommendations.',    moonPhaseInfo: 'Shows the current lunar phase with visual representation. The moon goes through 8 phases from New Moon to Full Moon and back, cycling approximately every 29.5 days.',
     goldenHourInfo: 'The golden hour occurs twice daily - shortly after sunrise and before sunset. During this time, the sun is low on the horizon, creating soft, warm, diffused light perfect for photography.',
     sunElevationInfo: 'Displays the sun\'s altitude angle above the horizon throughout the day. The graph shows how the sun rises, peaks at solar noon, and sets. Higher elevations mean more intense sunlight.',
     compassInfo: 'Shows the sun\'s azimuth - the compass direction from which sunlight is coming. 0° is North, 90° is East, 180° is South, and 270° is West. The arrow points toward the sun\'s current position.',
@@ -256,8 +264,11 @@ const translations = {
     
     // Feature info
     sunInfoDesc: 'Zeigt wichtige Sonnenzeiten für Ihren Standort einschließlich Sonnenaufgang, Sonnenuntergang und Tageslänge. Der Tageslichtverschied vergleicht die heutige Länge mit dem kürzesten Tag des Jahres (21. Dezember) und dem längsten Tag (21. Juni). In Polarnächten oder Mitternachtssonne können diese Werte extrem variieren.',
-    moonInfoDesc: 'Zeigt Mondauf- und -untergangszeiten für Ihren Standort. Der Mond kann je nach Phase sowohl Tag als auch Nacht sichtbar sein.',
-    moonPhaseInfo: 'Zeigt die aktuelle Mondphase mit visueller Darstellung. Der Mond durchläuft 8 Phasen vom Neumond zum Vollmond und zurück, in einem Zyklus von etwa 29,5 Tagen.',
+    moonInfoDesc: 'Zeigt Mondauf- und -untergangszeiten für Ihren Standort. Der Mond kann je nach Phase sowohl Tag als auch Nacht sichtbar sein.',    moonPhaseDesc: 'Aktuelle Mondphase und Beleuchtungsprozentsatz.',
+    sunElevationDesc: '24-Stunden-Sonnenelationsdiagramm.',
+    goldenHourDesc: 'Beste Zeiten zum Fotografieren mit goldenem Licht.',
+    compassDesc: 'Sonnenposition und -richtung.',
+    uvIndexDesc: 'UV-Index und Sonnenschutzempfehlungen.',    moonPhaseInfo: 'Zeigt die aktuelle Mondphase mit visueller Darstellung. Der Mond durchläuft 8 Phasen vom Neumond zum Vollmond und zurück, in einem Zyklus von etwa 29,5 Tagen.',
     goldenHourInfo: 'Die goldene Stunde tritt zweimal täglich auf - kurz nach Sonnenaufgang und vor Sonnenuntergang. Während dieser Zeit steht die Sonne tief am Horizont und erzeugt weiches, warmes, diffuses Licht, perfekt für die Fotografie.',
     sunElevationInfo: 'Zeigt den Höhenwinkel der Sonne über dem Horizont im Tagesverlauf. Die Grafik zeigt, wie die Sonne aufgeht, mittags ihren Höchststand erreicht und untergeht. Höhere Elevationen bedeuten intensiveres Sonnenlicht.',
     compassInfo: 'Zeigt den Azimut der Sonne - die Himmelsrichtung, aus der das Sonnenlicht kommt. 0° ist Norden, 90° ist Osten, 180° ist Süden und 270° ist Westen. Der Pfeil zeigt zur aktuellen Position der Sonne.',
@@ -362,6 +373,11 @@ const translations = {
     // Feature info
     sunInfoDesc: '显示您所在位置的重要日出日落时间，包括白昼时长。日照时长差异将今天的长度与一年中最短的一天（12月21日）和最长的一天（6月21日）进行比较。在极夜或极昼期间，这些值可能会极端变化。',
     moonInfoDesc: '显示您所在位置的月出月落时间。月亮根据其相位可在白天或夜晚可见。',
+    moonPhaseDesc: '当前月相和照明百分比。',
+    sunElevationDesc: '24小时太阳高度图。',
+    goldenHourDesc: '金色时光摄影的最佳时间。',
+    compassDesc: '太阳位置和方向。',
+    uvIndexDesc: '紫外线指数和防晒建议。',
     moonPhaseInfo: '显示当前月相的视觉表示。月球经历从新月到满月再返回的8个阶段，周期约为29.5天。',
     goldenHourInfo: '黄金时刻每天出现两次 - 日出后不久和日落前。在此期间，太阳低垂于地平线上，创造出柔和、温暖、漫射的光线，非常适合摄影。',
     sunElevationInfo: '显示太阳在一天中相对于地平线的高度角。图表显示太阳如何升起、在正午达到峰值并落下。更高的高度意味着更强烈的阳光。',
@@ -461,8 +477,11 @@ const translations = {
     
     // Feature info
     sunInfoDesc: 'Muestra los horarios importantes del sol para su ubicación, incluyendo amanecer, atardecer y duración del día. La diferencia de luz diurna compara la duración de hoy con el día más corto del año (21 de diciembre) y el día más largo (21 de junio). En noches polares o sol de medianoche estos valores pueden variar extremadamente.',
-    moonInfoDesc: 'Muestra los horarios de salida y puesta de la luna para su ubicación. La luna puede ser visible tanto de día como de noche dependiendo de su fase.',
-    moonPhaseInfo: 'Muestra la fase lunar actual con representación visual. La Luna pasa por 8 fases desde luna nueva hasta luna llena y viceversa, con un ciclo de aproximadamente 29,5 días.',
+    moonInfoDesc: 'Muestra los horarios de salida y puesta de la luna para su ubicación. La luna puede ser visible tanto de día como de noche dependiendo de su fase.',    moonPhaseDesc: 'Fase lunar actual y porcentaje de iluminación.',
+    sunElevationDesc: 'Gráfico de elevación solar de 24 horas.',
+    goldenHourDesc: 'Mejores momentos para fotografía con luz dorada.',
+    compassDesc: 'Posición y dirección del sol.',
+    uvIndexDesc: 'Índice UV y recomendaciones de protección solar.',    moonPhaseInfo: 'Muestra la fase lunar actual con representación visual. La Luna pasa por 8 fases desde luna nueva hasta luna llena y viceversa, con un ciclo de aproximadamente 29,5 días.',
     goldenHourInfo: 'La hora dorada ocurre dos veces al día - poco después del amanecer y antes del atardecer. Durante este tiempo, el sol está bajo en el horizonte y crea luz suave, cálida y difusa perfecta para fotografía.',
     sunElevationInfo: 'Muestra el ángulo de elevación del sol sobre el horizonte durante todo el día. El gráfico muestra cómo el sol sube, alcanza su punto máximo al mediodía solar y desciende. Una mayor elevación significa luz solar más intensa.',
     compassInfo: 'Muestra el azimut del sol - la dirección de la brújula desde donde proviene la luz solar. 0° es norte, 90° es este, 180° es sur y 270° es oeste. La flecha apunta hacia la posición actual del sol.',

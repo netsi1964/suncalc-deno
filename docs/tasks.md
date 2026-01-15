@@ -45,6 +45,13 @@
 - [x] Swap location-controls and map-container positions
 - [x] Fix search working multiple times by re-attaching event listeners after render
 - [x] Increase location-controls height to better utilize available space
+- [x] Add Playwright end-to-end testing framework
+- [x] Create comprehensive test suite covering all UI components
+- [x] Add test utilities for Shadow DOM interaction
+- [x] Write tests for language switching and i18n
+- [x] Add responsive layout tests (desktop, tablet, mobile)
+- [x] Test timezone handling and polar phenomena
+- [x] Add test commands to deno.json (test, test:ui, test:debug)
 
 ## 💡 Future Ideas
 See [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for long-term enhancements.

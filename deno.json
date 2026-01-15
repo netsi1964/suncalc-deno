@@ -1,7 +1,10 @@
 {
   "tasks": {
     "start": "deno run --allow-net --allow-read main.ts",
-    "dev": "deno run --allow-net --allow-read --watch main.ts"
+    "dev": "deno run --allow-net --allow-read --watch main.ts",
+    "test": "deno test --allow-net --allow-read --allow-run --allow-env tests/",
+    "test:ui": "deno test --allow-net --allow-read --allow-run --allow-env --headed tests/",
+    "test:debug": "deno test --allow-net --allow-read --allow-run --allow-env --inspect-brk tests/"
   },
   "compilerOptions": {
     "lib": ["deno.window", "dom"]

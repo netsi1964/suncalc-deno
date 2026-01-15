@@ -11,6 +11,7 @@ class SunMoonInfo extends HTMLElement {
     this.lng = null;
     this.locationName = "";
     this.timezone = null;
+    this.timezoneName = null; // IANA timezone name (e.g., 'America/New_York')
     this.map = null;
     this.marker = null;
     this.zoom = 13;
@@ -324,6 +325,9 @@ class SunMoonInfo extends HTMLElement {
           this.lat = parseFloat(results[0].lat);
           this.lng = parseFloat(results[0].lon);
           this.locationName = results[0].display_name.split(",")[0];
+          
+          // Get timezone for this location
+          this.timezoneName = await this.getTimezoneForLocation(this.lat, this.lng);
 
           this.calculateSunMoonData();
           this.render();
@@ -394,26 +398,23 @@ class SunMoonInfo extends HTMLElement {
 
         if (hour < 0 || hour > 23) return;
 
-        // Get timezone offset for display
-        const timezoneOffsetHours = this.getTimezoneOffset(
-          this.currentDate,
-          this.lat,
-          this.lng
-        );
-        const userOffsetHours = -(this.currentDate.getTimezoneOffset() / 60);
-        const hourDiff = timezoneOffsetHours - userOffsetHours;
-
         // Calculate sun elevation for this hour
         const date = new Date(this.currentDate);
         date.setHours(hour, 0, 0, 0);
         const pos = SunCalc.getPosition(date, this.lat, this.lng);
         const altitude = ((pos.altitude * 180) / Math.PI).toFixed(1);
 
-        // Display hour in location's local time
-        let displayHour = (hour + hourDiff) % 24;
-        if (displayHour < 0) displayHour += 24;
+        // Format hour in location's timezone
+        const hourDate = new Date(this.currentDate);
+        hourDate.setHours(hour, 0, 0, 0);
+        const timeStr = hourDate.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+          timeZone: this.timezoneName || undefined,
+        });
 
-        tooltip.textContent = `${Math.round(displayHour)}:00 → ${altitude}°`;
+        tooltip.textContent = `${timeStr} → ${altitude}°`;
         tooltip.style.display = "block";
         tooltip.style.left = `${e.clientX - rect.left}px`;
         tooltip.style.top = `${e.clientY - rect.top - 25}px`;
@@ -439,6 +440,10 @@ class SunMoonInfo extends HTMLElement {
   async initializeLocation() {
     // Skip if already loaded from state
     if (this.lat && this.lng) {
+      // Ensure we have timezone if missing
+      if (!this.timezoneName) {
+        this.timezoneName = await this.getTimezoneForLocation(this.lat, this.lng);
+      }
       this.updateData();
       return;
     }
@@ -451,6 +456,8 @@ class SunMoonInfo extends HTMLElement {
       this.lat = parseFloat(latAttr);
       this.lng = parseFloat(lngAttr);
       this.locationName = "Custom Location";
+      // Get timezone for custom location
+      this.timezoneName = await this.getTimezoneForLocation(this.lat, this.lng);
       this.updateData();
     } else {
       // Auto-detect location via IP
@@ -468,6 +475,9 @@ class SunMoonInfo extends HTMLElement {
       this.lat = parseFloat(lat);
       this.lng = parseFloat(lng);
       this.locationName = data.city || "Unknown";
+      
+      // Get timezone for this location
+      this.timezoneName = await this.getTimezoneForLocation(this.lat, this.lng);
 
       this.updateData();
     } catch (error) {
@@ -476,6 +486,7 @@ class SunMoonInfo extends HTMLElement {
       this.lat = 56.2635;
       this.lng = 10.3041;
       this.locationName = "Skodstrup";
+      this.timezoneName = "Europe/Copenhagen";
       this.updateData();
     }
   }
@@ -495,6 +506,10 @@ class SunMoonInfo extends HTMLElement {
         data.address?.village ||
         data.address?.state ||
         "Unknown";
+      
+      // Also get timezone for this location
+      this.timezoneName = await this.getTimezoneForLocation(lat, lng);
+      
       return city;
     } catch (error) {
       console.error("Reverse geocoding failed:", error);
@@ -651,12 +666,40 @@ class SunMoonInfo extends HTMLElement {
     }, 100);
   }
 
-  // Get timezone for coordinates
-  getTimezoneOffset(_date, _lat, lng) {
-    // This is a simple estimation based on longitude
-    // For more accurate results, you'd need a timezone API
-    const timezoneOffset = Math.round(lng / 15);
-    return timezoneOffset;
+  // Get timezone name for coordinates using free API
+  async getTimezoneForLocation(lat, lng) {
+    try {
+      // Use WorldTimeAPI's timezone endpoint (free, no key required)
+      const response = await fetch(
+        `https://timeapi.io/api/TimeZone/coordinate?latitude=${lat}&longitude=${lng}`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.timeZone || null;
+      }
+    } catch (error) {
+      console.warn('TimeAPI failed, trying GeoNames:', error);
+    }
+
+    try {
+      // Fallback to GeoNames (free, no registration required for low usage)
+      const response = await fetch(
+        `https://secure.geonames.org/timezoneJSON?lat=${lat}&lng=${lng}&username=demo`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.timezoneId || null;
+      }
+    } catch (error) {
+      console.warn('GeoNames timezone lookup failed:', error);
+    }
+
+    // If all APIs fail, estimate timezone from longitude
+    console.warn('Using fallback timezone estimation based on longitude');
+    const offset = Math.round(lng / 15);
+    return `Etc/GMT${offset >= 0 ? '-' : '+'}${Math.abs(offset)}`;
   }
 
   // Render date picker as a feature card
@@ -890,20 +933,19 @@ class SunMoonInfo extends HTMLElement {
       return "--:--";
     }
 
-    // Estimate timezone offset based on longitude
-    const timezoneOffsetHours = Math.round(this.lng / 15);
-    const localDate = new Date(
-      date.getTime() +
-        timezoneOffsetHours * 60 * 60 * 1000 -
-        date.getTimezoneOffset() * 60 * 1000
-    );
-
-    return localDate.toLocaleTimeString("en-US", {
+    // Use the location's timezone if available
+    const options = {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-      timeZone: "UTC",
-    });
+    };
+
+    // If we have a timezone name, use it; otherwise use the browser's local timezone
+    if (this.timezoneName) {
+      options.timeZone = this.timezoneName;
+    }
+
+    return date.toLocaleTimeString("en-US", options);
   }
 
   // Get moon phase emoji
@@ -1335,25 +1377,20 @@ class SunMoonInfo extends HTMLElement {
 
     const pointsStr = points.join(" ");
 
-    // X-axis labels (every 6 hours) - adjusted for location's timezone
-    const timezoneOffsetHours = this.getTimezoneOffset(
-      this.currentDate,
-      this.lat,
-      this.lng
-    );
-    const userOffsetHours = -(this.currentDate.getTimezoneOffset() / 60);
-    const hourDiff = timezoneOffsetHours - userOffsetHours;
-
+    // X-axis labels (every 6 hours) - in location's timezone
     const xLabels = [0, 6, 12, 18, 24]
       .map((hour) => {
         const x = (hour / 24) * width;
-        let displayHour = (hour + hourDiff) % 24;
-        if (displayHour < 0) displayHour += 24;
+        const hourDate = new Date(this.currentDate);
+        hourDate.setHours(hour, 0, 0, 0);
+        const displayHour = hourDate.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          hour12: false,
+          timeZone: this.timezoneName || undefined,
+        }).split(':')[0];
         return `<text x="${x}" y="${
           height - 3
-        }" font-size="9" fill="#666" text-anchor="middle">${Math.round(
-          displayHour
-        )}</text>`;
+        }" font-size="9" fill="#666" text-anchor="middle">${displayHour}</text>`;
       })
       .join("");
 

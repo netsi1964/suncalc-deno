@@ -30,5 +30,12 @@
       ],
       "bin": true
     }
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@playwright/test@^1.57.0"
+      ]
+    }
   }
 }

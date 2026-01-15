@@ -60,8 +60,9 @@ This directory contains comprehensive end-to-end tests for the SunCalc-Deno appl
 ## Running Tests
 
 ### Prerequisites
-The Deno server must be running on http://localhost:8000 before running tests:
+Playwright will automatically start the Deno server before running tests (configured in playwright.config.ts).
 
+If you want to run the server manually first:
 ```bash
 deno task start
 # or
@@ -71,26 +72,44 @@ deno task dev
 ### Run all tests (headless)
 ```bash
 deno task test
+# or
+npx playwright test
 ```
 
-### Run tests with UI (headed mode)
+### Run tests with UI mode
 ```bash
 deno task test:ui
+# or
+npx playwright test --ui
 ```
 
 ### Run tests with debugger
 ```bash
 deno task test:debug
+# or
+npx playwright test --debug
+```
+
+### Run tests with visible browser
+```bash
+deno task test:headed
+# or
+npx playwright test --headed
 ```
 
 ### Run specific test file
 ```bash
-deno test --allow-net --allow-read --allow-run --allow-env tests/component.test.ts
+npx playwright test tests/component.test.ts
 ```
 
 ### Run specific test suite
 ```bash
-deno test --allow-net --allow-read --allow-run --allow-env tests/language.test.ts
+npx playwright test tests/language.test.ts
+```
+
+### View test report
+```bash
+npx playwright show-report
 ```
 
 ## Test Structure

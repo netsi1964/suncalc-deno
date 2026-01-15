@@ -1,8 +1,7 @@
-import { test, expect } from "npm:@playwright/test@^1.40.0";
-import { 
-  BASE_URL, 
-  waitForComponentReady,
-  LANGUAGES
+import { expect, test } from "@playwright/test";
+import {
+    BASE_URL,
+    waitForComponentReady
 } from "./setup.ts";
 
 test.describe('Language Selector', () => {

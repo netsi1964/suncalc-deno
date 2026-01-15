@@ -1,0 +1,28 @@
+{
+  "name": "suncalc-deno",
+  "version": "1.0.0",
+  "description": "A Deno-based web application that displays real-time sun and moon information using vanilla JavaScript Custom Elements.",
+  "main": "custom-tooltip.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netsi1964/suncalc-deno.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/netsi1964/suncalc-deno/issues"
+  },
+  "homepage": "https://github.com/netsi1964/suncalc-deno#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0"
+  }
+}

@@ -2,9 +2,10 @@
   "tasks": {
     "start": "deno run --allow-net --allow-read main.ts",
     "dev": "deno run --allow-net --allow-read --watch main.ts",
-    "test": "deno test --allow-net --allow-read --allow-run --allow-env --allow-sys tests/",
-    "test:ui": "deno test --allow-net --allow-read --allow-run --allow-env --allow-sys --headed tests/",
-    "test:debug": "deno test --allow-net --allow-read --allow-run --allow-env --allow-sys --inspect-brk tests/"
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "test:debug": "npx playwright test --debug",
+    "test:headed": "npx playwright test --headed"
   },
   "compilerOptions": {
     "lib": ["deno.window", "dom"]

@@ -1,8 +1,8 @@
-import { test, expect } from "npm:@playwright/test@^1.40.0";
-import { 
-  BASE_URL, 
-  waitForComponentReady,
-  TEST_LOCATIONS
+import { expect, test } from "@playwright/test";
+import {
+    BASE_URL,
+    TEST_LOCATIONS,
+    waitForComponentReady
 } from "./setup.ts";
 
 test.describe('Responsive Layout', () => {

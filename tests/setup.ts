@@ -28,16 +28,23 @@ export const LANGUAGES = {
  * Wait for the custom element to be fully rendered
  */
 export async function waitForComponentReady(page: any) {
-  await page.waitForSelector('sun-moon-info', { state: 'attached' });
+  await page.waitForSelector('sun-moon-info', { state: 'attached', timeout: 10000 });
   
   // Wait for shadow root to be ready
   await page.waitForFunction(() => {
     const component = document.querySelector('sun-moon-info');
     return component && component.shadowRoot !== null;
-  });
+  }, { timeout: 10000 });
+  
+  // Wait for header to be rendered (indicates component is ready)
+  await page.waitForFunction(() => {
+    const component = document.querySelector('sun-moon-info');
+    const header = component?.shadowRoot?.querySelector('.header');
+    return header !== null;
+  }, { timeout: 10000 });
   
   // Wait for initial data to load
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(2000);
 }
 
 /**

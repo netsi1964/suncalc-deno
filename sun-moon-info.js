@@ -936,11 +936,14 @@ class SunMoonInfo extends HTMLElement {
       return;
     }
 
-    const now = this.currentDate;
-
-    // Get sun times
-    const times = SunCalc.getTimes(now, this.lat, this.lng);
-    const sunPos = SunCalc.getPosition(now, this.lat, this.lng);
+    // Create a date at noon in the location's timezone to ensure we get the correct day's data
+    // This prevents timezone issues when the user's system timezone differs from the location's timezone
+    const dateStr = this.currentDate.toISOString().split('T')[0]; // Get YYYY-MM-DD
+    const noonInLocation = new Date(dateStr + 'T12:00:00');
+    
+    // Get sun times - use noon to ensure we're calculating for the correct calendar day
+    const times = SunCalc.getTimes(noonInLocation, this.lat, this.lng);
+    const sunPos = SunCalc.getPosition(noonInLocation, this.lat, this.lng);
 
     this.sunData = {
       sunrise: times.sunrise,
@@ -1027,10 +1030,10 @@ class SunMoonInfo extends HTMLElement {
     this.sunData.diffFromShortest = formatDiff(diffFromShortest);
     this.sunData.diffFromLongest = formatDiff(diffFromLongest);
 
-    // Get moon times and phase
-    const moonTimes = SunCalc.getMoonTimes(now, this.lat, this.lng);
-    const moonIllumination = SunCalc.getMoonIllumination(now);
-    const moonPos = SunCalc.getMoonPosition(now, this.lat, this.lng);
+    // Get moon times and phase - use the same noonInLocation date for consistency
+    const moonTimes = SunCalc.getMoonTimes(noonInLocation, this.lat, this.lng);
+    const moonIllumination = SunCalc.getMoonIllumination(noonInLocation);
+    const moonPos = SunCalc.getMoonPosition(noonInLocation, this.lat, this.lng);
 
     this.moonData = {
       rise: moonTimes.rise,

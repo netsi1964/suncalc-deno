@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SunCalc Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+</head>
+<body>
+  <h1>SunCalc Test for Skødstrup</h1>
+  <div id="output"></div>
+  
+  <script>
+    const lat = 56.2635;
+    const lng = 10.3041;
+    const date = new Date('2026-01-15T00:00:00'); // Today at midnight local time
+    const times = SunCalc.getTimes(date, lat, lng);
+    
+    const output = document.getElementById('output');
+    output.innerHTML = `
+      <h2>Date: ${date.toString()}</h2>
+      <p><strong>Sunrise UTC:</strong> ${times.sunrise.toISOString()}</p>
+      <p><strong>Sunrise System Local:</strong> ${times.sunrise.toString()}</p>
+      <p><strong>Sunrise toLocaleTimeString (no TZ):</strong> ${times.sunrise.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</p>
+      <p><strong>Sunrise toLocaleTimeString (Copenhagen):</strong> ${times.sunrise.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
+      <hr>
+      <p><strong>Sunset UTC:</strong> ${times.sunset.toISOString()}</p>
+      <p><strong>Sunset toLocaleTimeString (Copenhagen):</strong> ${times.sunset.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
+      <hr>
+      <h3>Expected (Google Calendar): 08:29 / 16:09</h3>
+      <h3>App shows: 07:43 / 15:15</h3>
+    `;
+    
+    console.log('SunCalc data:', times);
+  </script>
+</body>
+</html>

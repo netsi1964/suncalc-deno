@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timezone Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+</head>
+<body>
+  <h1>Test: Sun times for Skødstrup (15 Jan 2026)</h1>
+  <div id="output"></div>
+  
+  <script>
+    const lat = 56.2635;
+    const lng = 10.3041;
+    
+    // Old method (using midnight local time)
+    const oldDate = new Date(2026, 0, 15); // 15 Jan 2026 00:00 local time
+    const oldTimes = SunCalc.getTimes(oldDate, lat, lng);
+    
+    // New method (using noon UTC)
+    const dateStr = '2026-01-15';
+    const noonDate = new Date(dateStr + 'T12:00:00');
+    const newTimes = SunCalc.getTimes(noonDate, lat, lng);
+    
+    const output = document.getElementById('output');
+    output.innerHTML = `
+      <h2>System Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}</h2>
+      
+      <h3>OLD Method (midnight local):</h3>
+      <p>Input date: ${oldDate.toString()}</p>
+      <p><strong>Sunrise:</strong> ${oldTimes.sunrise.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
+      <p><strong>Sunset:</strong> ${oldTimes.sunset.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
+      
+      <h3>NEW Method (noon UTC):</h3>
+      <p>Input date: ${noonDate.toString()}</p>
+      <p><strong>Sunrise:</strong> ${newTimes.sunrise.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
+      <p><strong>Sunset:</strong> ${newTimes.sunset.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
+      
+      <h3 style="color: green;">Expected (Google Calendar): 08:29 / 16:09</h3>
+    `;
+    
+    console.log('Old sunrise UTC:', oldTimes.sunrise.toISOString());
+    console.log('New sunrise UTC:', newTimes.sunrise.toISOString());
+  </script>
+</body>
+</html>

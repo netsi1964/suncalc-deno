@@ -46,6 +46,8 @@ class SunMoonInfo extends HTMLElement {
 
     // Listen for language changes
     window.addEventListener("languagechange", () => {
+      // Recalculate data to update time abbreviations (h/m/t etc)
+      this.calculateSunMoonData();
       this.render();
       // Re-initialize map and event listeners after render
       this.initializeMap();

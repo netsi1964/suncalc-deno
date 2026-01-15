@@ -45,7 +45,7 @@ const translations = {
     minuteAbbr: 'm',
     
     // Feature info
-    sunInfoDesc: 'Viser vigtige soltider for din placering inklusiv solopgang, solnedgang og dagslængde. I polarnætter eller midnatssol kan disse værdier variere ekstremt.',
+    sunInfoDesc: 'Viser vigtige soltider for din placering inklusiv solopgang, solnedgang og dagslængde. Forskellen i dagslængde sammenligner dagens længde med årets korteste dag (21. december) og længste dag (21. juni). I polarnætter eller midnatssol kan disse værdier variere ekstremt.',
     moonInfoDesc: 'Viser månens op- og nedgangstider for din placering. Månen kan være synlig både dag og nat afhængig af fasen.',
     moonPhaseInfo: 'Viser den aktuelle månefase med visuel repræsentation. Månen gennemgår 8 faser fra nymåne til fuldmåne og tilbage, med en cyklus på cirka 29,5 dage.',
     goldenHourInfo: 'Den gyldne time opstår to gange dagligt - kort efter solopgang og før solnedgang. I denne tid er solen lav på horisonten og skaber blødt, varmt, diffust lys perfekt til fotografering.',
@@ -151,7 +151,7 @@ const translations = {
     minuteAbbr: 'm',
     
     // Feature info
-    sunInfoDesc: 'Shows important sun times for your location including sunrise, sunset and daylight duration. In polar nights or midnight sun these values can vary extremely.',
+    sunInfoDesc: 'Shows important sun times for your location including sunrise, sunset and daylight duration. Daylight difference compares today\'s length with the year\'s shortest day (December 21) and longest day (June 21). In polar nights or midnight sun these values can vary extremely.',
     moonInfoDesc: 'Shows moon rise and set times for your location. The moon can be visible both day and night depending on its phase.',
     moonPhaseInfo: 'Shows the current lunar phase with visual representation. The moon goes through 8 phases from New Moon to Full Moon and back, cycling approximately every 29.5 days.',
     goldenHourInfo: 'The golden hour occurs twice daily - shortly after sunrise and before sunset. During this time, the sun is low on the horizon, creating soft, warm, diffused light perfect for photography.',
@@ -255,7 +255,7 @@ const translations = {
     minuteAbbr: 'Min',
     
     // Feature info
-    sunInfoDesc: 'Zeigt wichtige Sonnenzeiten für Ihren Standort einschließlich Sonnenaufgang, Sonnenuntergang und Tageslänge. In Polarnächten oder Mitternachtssonne können diese Werte extrem variieren.',
+    sunInfoDesc: 'Zeigt wichtige Sonnenzeiten für Ihren Standort einschließlich Sonnenaufgang, Sonnenuntergang und Tageslänge. Der Tageslichtverschied vergleicht die heutige Länge mit dem kürzesten Tag des Jahres (21. Dezember) und dem längsten Tag (21. Juni). In Polarnächten oder Mitternachtssonne können diese Werte extrem variieren.',
     moonInfoDesc: 'Zeigt Mondauf- und -untergangszeiten für Ihren Standort. Der Mond kann je nach Phase sowohl Tag als auch Nacht sichtbar sein.',
     moonPhaseInfo: 'Zeigt die aktuelle Mondphase mit visueller Darstellung. Der Mond durchläuft 8 Phasen vom Neumond zum Vollmond und zurück, in einem Zyklus von etwa 29,5 Tagen.',
     goldenHourInfo: 'Die goldene Stunde tritt zweimal täglich auf - kurz nach Sonnenaufgang und vor Sonnenuntergang. Während dieser Zeit steht die Sonne tief am Horizont und erzeugt weiches, warmes, diffuses Licht, perfekt für die Fotografie.',
@@ -360,7 +360,7 @@ const translations = {
     minuteAbbr: '分钟',
     
     // Feature info
-    sunInfoDesc: '显示您所在位置的重要日出日落时间，包括白昼时长。在极夜或极昼期间，这些值可能会极端变化。',
+    sunInfoDesc: '显示您所在位置的重要日出日落时间，包括白昼时长。日照时长差异将今天的长度与一年中最短的一天（12月21日）和最长的一天（6月21日）进行比较。在极夜或极昼期间，这些值可能会极端变化。',
     moonInfoDesc: '显示您所在位置的月出月落时间。月亮根据其相位可在白天或夜晚可见。',
     moonPhaseInfo: '显示当前月相的视觉表示。月球经历从新月到满月再返回的8个阶段，周期约为29.5天。',
     goldenHourInfo: '黄金时刻每天出现两次 - 日出后不久和日落前。在此期间，太阳低垂于地平线上，创造出柔和、温暖、漫射的光线，非常适合摄影。',
@@ -460,7 +460,7 @@ const translations = {
     minuteAbbr: 'min',
     
     // Feature info
-    sunInfoDesc: 'Muestra los horarios importantes del sol para su ubicación, incluyendo amanecer, atardecer y duración del día. En noches polares o sol de medianoche estos valores pueden variar extremadamente.',
+    sunInfoDesc: 'Muestra los horarios importantes del sol para su ubicación, incluyendo amanecer, atardecer y duración del día. La diferencia de luz diurna compara la duración de hoy con el día más corto del año (21 de diciembre) y el día más largo (21 de junio). En noches polares o sol de medianoche estos valores pueden variar extremadamente.',
     moonInfoDesc: 'Muestra los horarios de salida y puesta de la luna para su ubicación. La luna puede ser visible tanto de día como de noche dependiendo de su fase.',
     moonPhaseInfo: 'Muestra la fase lunar actual con representación visual. La Luna pasa por 8 fases desde luna nueva hasta luna llena y viceversa, con un ciclo de aproximadamente 29,5 días.',
     goldenHourInfo: 'La hora dorada ocurre dos veces al día - poco después del amanecer y antes del atardecer. Durante este tiempo, el sol está bajo en el horizonte y crea luz suave, cálida y difusa perfecta para fotografía.',

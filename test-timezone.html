@@ -16,10 +16,10 @@
     const oldDate = new Date(2026, 0, 15); // 15 Jan 2026 00:00 local time
     const oldTimes = SunCalc.getTimes(oldDate, lat, lng);
     
-    // New method (using noon UTC)
+    // New method (using noon UTC with Z)
     const dateStr = '2026-01-15';
-    const noonDate = new Date(dateStr + 'T12:00:00');
-    const newTimes = SunCalc.getTimes(noonDate, lat, lng);
+    const noonUTC = new Date(dateStr + 'T12:00:00Z'); // Z marks it as UTC
+    const newTimes = SunCalc.getTimes(noonUTC, lat, lng);
     
     const output = document.getElementById('output');
     output.innerHTML = `
@@ -30,12 +30,13 @@
       <p><strong>Sunrise:</strong> ${oldTimes.sunrise.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
       <p><strong>Sunset:</strong> ${oldTimes.sunset.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
       
-      <h3>NEW Method (noon UTC):</h3>
-      <p>Input date: ${noonDate.toString()}</p>
+      <h3>NEW Method (noon UTC with Z):</h3>
+      <p>Input date: ${noonUTC.toString()}</p>
       <p><strong>Sunrise:</strong> ${newTimes.sunrise.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
       <p><strong>Sunset:</strong> ${newTimes.sunset.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Copenhagen' })}</p>
       
-      <h3 style="color: green;">Expected (Google Calendar): 08:29 / 16:09</h3>
+      <h3 style="color: green;">Expected: ~08:30-08:42 / ~16:09-16:16</h3>
+      <p><small>Note: Exact times vary by ~10 min depending on exact coordinates within Århus/Skødstrup area</small></p>
     `;
     
     console.log('Old sunrise UTC:', oldTimes.sunrise.toISOString());

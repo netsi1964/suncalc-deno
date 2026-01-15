@@ -785,7 +785,7 @@ class SunMoonInfo extends HTMLElement {
         <tr>
           <td class="info-label">${window.t("daylight")}</td>
           <td class="info-value">${
-            this.sunData ? this.sunData.daylightDuration : "--h --m"
+            this.sunData ? this.sunData.daylightDuration : `--${window.t("hourAbbr")} --${window.t("minuteAbbr")}`
           }</td>
         </tr>
         <tr>
@@ -882,7 +882,7 @@ class SunMoonInfo extends HTMLElement {
         <tr>
           <td class="info-label">${window.t("daylight")}</td>
           <td class="info-value">${
-            this.sunData ? this.sunData.daylightDuration : "--h --m"
+            this.sunData ? this.sunData.daylightDuration : `--${window.t("hourAbbr")} --${window.t("minuteAbbr")}`
           }</td>
         </tr>
         <tr>
@@ -961,12 +961,12 @@ class SunMoonInfo extends HTMLElement {
       currentDaylightMs = times.sunset - times.sunrise;
       const hours = Math.floor(currentDaylightMs / (1000 * 60 * 60));
       const minutes = Math.floor((currentDaylightMs % (1000 * 60 * 60)) / (1000 * 60));
-      this.sunData.daylightDuration = `${hours}h ${minutes}m`;
+      this.sunData.daylightDuration = `${hours}${window.t("hourAbbr")} ${minutes}${window.t("minuteAbbr")}`;
     } else {
       // Polar night (0h) or midnight sun (24h)
       currentDaylightMs = this.sunData.polarCondition === "polarNight" ? 0 : 24 * 60 * 60 * 1000;
       this.sunData.daylightDuration =
-        this.sunData.polarCondition === "polarNight" ? "0h 0m" : "24h 0m";
+        this.sunData.polarCondition === "polarNight" ? `0${window.t("hourAbbr")} 0${window.t("minuteAbbr")}` : `24${window.t("hourAbbr")} 0${window.t("minuteAbbr")}`;
     }
 
     // Calculate difference from shortest and longest days
@@ -998,11 +998,11 @@ class SunMoonInfo extends HTMLElement {
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
       const sign = ms >= 0 ? '+' : '-';
-      return `${sign}${hours}h ${minutes}m`;
+      return `${sign}${hours}${window.t("hourAbbr")} ${minutes}${window.t("minuteAbbr")}`;
     };
 
     this.sunData.diffFromShortest = formatDiff(diffFromShortest);
-    this.sunData.diffFromLongest = formatDiff(-diffFromLongest);
+    this.sunData.diffFromLongest = formatDiff(-diffFromLongest); // Negate to show as negative (day is shorter)
 
     // Get moon times and phase
     const moonTimes = SunCalc.getMoonTimes(now, this.lat, this.lng);

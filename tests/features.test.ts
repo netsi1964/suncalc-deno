@@ -172,6 +172,82 @@ test.describe('Feature Cards', () => {
     expect(stateInStorage).toBeDefined();
   });
 
+  test('should enable/disable Moon Information feature', async ({ page }) => {
+    // Wait a bit to ensure everything is loaded
+    await page.waitForTimeout(500);
+    
+    // Get initial state
+    const initialState = await page.evaluate(() => {
+      const component = document.querySelector('sun-moon-info') as any;
+      return {
+        featureEnabled: component.features.moonInfo,
+        cardExpanded: component.shadowRoot
+          .querySelector('feature-card[feature-id="moonInfo"]')
+          ?.getAttribute('expanded')
+      };
+    });
+    
+    console.log('Initial state:', initialState);
+    expect(initialState.featureEnabled).toBe(true);
+    expect(initialState.cardExpanded).toBe('true');
+    
+    // Click toggle to disable
+    await page.evaluate(() => {
+      const component = document.querySelector('sun-moon-info') as any;
+      const moonCard = Array.from(component.shadowRoot.querySelectorAll('feature-card') || [])
+        .find((c: any) => c.getAttribute('feature-id') === 'moonInfo');
+      const toggle = moonCard?.querySelector('feature-toggle') as any;
+      const toggleContainer = toggle?.shadowRoot?.querySelector('.toggle-container');
+      toggleContainer?.click();
+    });
+    
+    // Wait for re-render
+    await page.waitForTimeout(1000);
+    
+    // Check state after first toggle
+    const afterFirstToggle = await page.evaluate(() => {
+      const component = document.querySelector('sun-moon-info') as any;
+      return {
+        featureEnabled: component.features.moonInfo,
+        cardExpanded: component.shadowRoot
+          .querySelector('feature-card[feature-id="moonInfo"]')
+          ?.getAttribute('expanded')
+      };
+    });
+    
+    console.log('After first toggle:', afterFirstToggle);
+    expect(afterFirstToggle.featureEnabled).toBe(false);
+    expect(afterFirstToggle.cardExpanded).toBe('false');
+    
+    // Click toggle again to enable
+    await page.evaluate(() => {
+      const component = document.querySelector('sun-moon-info') as any;
+      const moonCard = Array.from(component.shadowRoot.querySelectorAll('feature-card') || [])
+        .find((c: any) => c.getAttribute('feature-id') === 'moonInfo');
+      const toggle = moonCard?.querySelector('feature-toggle') as any;
+      const toggleContainer = toggle?.shadowRoot?.querySelector('.toggle-container');
+      toggleContainer?.click();
+    });
+    
+    // Wait for re-render
+    await page.waitForTimeout(1000);
+    
+    // Check final state
+    const finalState = await page.evaluate(() => {
+      const component = document.querySelector('sun-moon-info') as any;
+      return {
+        featureEnabled: component.features.moonInfo,
+        cardExpanded: component.shadowRoot
+          .querySelector('feature-card[feature-id="moonInfo"]')
+          ?.getAttribute('expanded')
+      };
+    });
+    
+    console.log('Final state:', finalState);
+    expect(finalState.featureEnabled).toBe(true);
+    expect(finalState.cardExpanded).toBe('true');
+  });
+
   test('should restore feature states from localStorage', async ({ page }) => {
     // Set collapsed state for UV in localStorage
     await page.evaluate(() => {

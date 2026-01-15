@@ -1576,22 +1576,91 @@ class SunMoonInfo extends HTMLElement {
   // Toggle feature
   toggleFeature(feature) {
     this.features[feature] = !this.features[feature];
+    console.log(`Toggle ${feature}:`, this.features[feature]);
 
     // Save state to localStorage only (don't update URL)
     this.saveState(false);
 
-    // Update only the specific card instead of re-rendering everything
-    const card = this.shadowRoot.querySelector(
-      `feature-card[feature-id="${feature}"]`
-    );
-    if (card) {
-      const newState = this.features[feature];
-      card.setAttribute("expanded", newState.toString());
-
-      // Also update the toggle element
-      const toggle = card.querySelector("feature-toggle");
-      if (toggle) {
-        toggle.setAttribute("expanded", newState.toString());
+    // Find and replace just the specific card
+    const oldCard = this.shadowRoot.querySelector(`feature-card[feature-id="${feature}"]`);
+    if (oldCard) {
+      let newCard;
+      
+      // Render the specific card based on feature type
+      if (feature === 'datePicker') {
+        newCard = this.renderDatePickerCard();
+      } else if (feature === 'sunInfo') {
+        newCard = this.renderSunInfoCard();
+      } else if (feature === 'moonInfo') {
+        newCard = this.renderMoonInfoCard();
+      } else if (feature === 'moonPhase') {
+        newCard = this.renderFeatureCard(
+          "moonPhase",
+          "🌙",
+          window.t("moonPhase"),
+          `<div class="moon-phase-large">${this.getMoonPhaseEmoji()}</div>
+         <div class="feature-value">${this.getMoonPhaseName()}</div>
+         <div class="feature-detail">${
+           this.moonData ? Math.round(this.moonData.illumination * 100) : 0
+         }% ${window.t("illuminated")}</div>`,
+          window.t("moonPhaseDesc") || "Current moon phase and illumination percentage."
+        );
+      } else if (feature === 'sunElevation') {
+        newCard = this.renderFeatureCard(
+          "sunElevation",
+          "📊",
+          window.t("sunElevation"),
+          this.renderSunElevationChart(),
+          window.t("sunElevationDesc") || "24-hour sun elevation chart."
+        );
+      } else if (feature === 'goldenHour') {
+        const goldenHourData = this.getGoldenHourTimes();
+        newCard = this.renderFeatureCard(
+          "goldenHour",
+          "🌅",
+          window.t("goldenHour"),
+          `<table class="info-table">
+            <tr>
+              <td class="info-label">${window.t("morningGoldenHour")}</td>
+              <td class="info-value">${this.formatTimeRange(
+                goldenHourData.morningStart,
+                goldenHourData.morningEnd
+              )}</td>
+            </tr>
+            <tr>
+              <td class="info-label">${window.t("eveningGoldenHour")}</td>
+              <td class="info-value">${this.formatTimeRange(
+                goldenHourData.eveningStart,
+                goldenHourData.eveningEnd
+              )}</td>
+            </tr>
+          </table>`,
+          window.t("goldenHourDesc") || "Best times for photography with golden light."
+        );
+      } else if (feature === 'compass') {
+        newCard = this.renderFeatureCard(
+          "compass",
+          "🧭",
+          window.t("compass"),
+          this.renderCompass(),
+          window.t("compassDesc") || "Sun position and direction."
+        );
+      } else if (feature === 'uvIndex') {
+        newCard = this.renderFeatureCard(
+          "uvIndex",
+          "☀️",
+          window.t("uvIndex"),
+          this.renderUVIndex(),
+          window.t("uvIndexDesc") || "UV index and sun protection recommendations."
+        );
+      }
+      
+      if (newCard) {
+        oldCard.replaceWith(newCard);
+        // Re-attach event listeners for this specific card
+        setTimeout(() => {
+          this.attachFeatureEventListeners();
+        }, 0);
       }
     }
   }
@@ -1639,10 +1708,16 @@ class SunMoonInfo extends HTMLElement {
     this.shadowRoot.querySelectorAll("feature-toggle").forEach((toggle) => {
       const featureKey = toggle.getAttribute("data-feature");
       if (featureKey) {
-        toggle.addEventListener("toggle", (e) => {
+        // Remove old handler if exists
+        if (toggle._toggleHandler) {
+          toggle.removeEventListener("toggle", toggle._toggleHandler);
+        }
+        // Create and store new handler
+        toggle._toggleHandler = (e) => {
           e.stopPropagation();
           this.toggleFeature(featureKey);
-        });
+        };
+        toggle.addEventListener("toggle", toggle._toggleHandler);
       }
     });
 
@@ -1650,10 +1725,16 @@ class SunMoonInfo extends HTMLElement {
     this.shadowRoot.querySelectorAll("tab-group").forEach((tabGroup) => {
       const featureKey = tabGroup.getAttribute("data-feature");
       if (featureKey) {
-        tabGroup.addEventListener("tab-change", (e) => {
+        // Remove old handler if exists
+        if (tabGroup._tabChangeHandler) {
+          tabGroup.removeEventListener("tab-change", tabGroup._tabChangeHandler);
+        }
+        // Create and store new handler
+        tabGroup._tabChangeHandler = (e) => {
           e.stopPropagation();
           this.switchTab(featureKey, e.detail.tab);
-        });
+        };
+        tabGroup.addEventListener("tab-change", tabGroup._tabChangeHandler);
       }
     });
 

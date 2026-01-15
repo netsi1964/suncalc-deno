@@ -53,6 +53,8 @@
 - [x] Test timezone handling and polar phenomena
 - [x] Add test commands to deno.json (test, test:ui, test:debug)
 - [x] Fix all 67 Playwright tests to pass (Chromium only)
+- [x] Add test:report command to deno.json for viewing HTML reports
+- [x] Create test for Moon Information feature toggle functionality (68 tests total)
 
 ## 💡 Future Ideas
 See [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for long-term enhancements.

@@ -759,6 +759,12 @@ class SunMoonInfo extends HTMLElement {
             this.sunData ? this.sunData.daylightDuration : "--h --m"
           }</td>
         </tr>
+        <tr>
+          <td class="info-label">${window.t("daylightDiff")}</td>
+          <td class="info-value" style="font-size: 0.85em; line-height: 1.4;">
+            ${this.sunData ? `<div>${window.t("fromShortest")}: ${this.sunData.diffFromShortest}</div><div>${window.t("fromLongest")}: ${this.sunData.diffFromLongest}</div>` : "--"}
+          </td>
+        </tr>
       </table>
     `;
 
@@ -843,6 +849,12 @@ class SunMoonInfo extends HTMLElement {
             this.sunData ? this.sunData.daylightDuration : "--h --m"
           }</td>
         </tr>
+        <tr>
+          <td class="info-label">${window.t("daylightDiff")}</td>
+          <td class="info-value" style="font-size: 0.85em; line-height: 1.4;">
+            ${this.sunData ? `<div>${window.t("fromShortest")}: ${this.sunData.diffFromShortest}</div><div>${window.t("fromLongest")}: ${this.sunData.diffFromLongest}</div>` : "--"}
+          </td>
+        </tr>
       </table>
       
       <div class="section-title" style="margin-top: 20px;">${window.t(
@@ -901,16 +913,53 @@ class SunMoonInfo extends HTMLElement {
     }
 
     // Calculate daylight duration
+    let currentDaylightMs = 0;
     if (sunriseValid && sunsetValid) {
-      const daylightMs = times.sunset - times.sunrise;
-      const hours = Math.floor(daylightMs / (1000 * 60 * 60));
-      const minutes = Math.floor((daylightMs % (1000 * 60 * 60)) / (1000 * 60));
+      currentDaylightMs = times.sunset - times.sunrise;
+      const hours = Math.floor(currentDaylightMs / (1000 * 60 * 60));
+      const minutes = Math.floor((currentDaylightMs % (1000 * 60 * 60)) / (1000 * 60));
       this.sunData.daylightDuration = `${hours}h ${minutes}m`;
     } else {
       // Polar night (0h) or midnight sun (24h)
+      currentDaylightMs = this.sunData.polarCondition === "polarNight" ? 0 : 24 * 60 * 60 * 1000;
       this.sunData.daylightDuration =
         this.sunData.polarCondition === "polarNight" ? "0h 0m" : "24h 0m";
     }
+
+    // Calculate difference from shortest and longest days
+    const year = this.currentDate.getFullYear();
+    const winterSolstice = new Date(year, 11, 21); // December 21
+    const summerSolstice = new Date(year, 5, 21); // June 21
+
+    // Get daylight duration for winter solstice (shortest day)
+    const winterTimes = SunCalc.getTimes(winterSolstice, this.lat, this.lng);
+    let shortestDayMs = 0;
+    if (winterTimes.sunrise && winterTimes.sunset && !isNaN(winterTimes.sunrise) && !isNaN(winterTimes.sunset)) {
+      shortestDayMs = winterTimes.sunset - winterTimes.sunrise;
+    }
+
+    // Get daylight duration for summer solstice (longest day)
+    const summerTimes = SunCalc.getTimes(summerSolstice, this.lat, this.lng);
+    let longestDayMs = 24 * 60 * 60 * 1000;
+    if (summerTimes.sunrise && summerTimes.sunset && !isNaN(summerTimes.sunrise) && !isNaN(summerTimes.sunset)) {
+      longestDayMs = summerTimes.sunset - summerTimes.sunrise;
+    }
+
+    // Calculate differences
+    const diffFromShortest = currentDaylightMs - shortestDayMs;
+    const diffFromLongest = longestDayMs - currentDaylightMs;
+
+    // Format differences
+    const formatDiff = (ms) => {
+      const totalMinutes = Math.floor(Math.abs(ms) / (1000 * 60));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const sign = ms >= 0 ? '+' : '-';
+      return `${sign}${hours}h ${minutes}m`;
+    };
+
+    this.sunData.diffFromShortest = formatDiff(diffFromShortest);
+    this.sunData.diffFromLongest = formatDiff(-diffFromLongest);
 
     // Get moon times and phase
     const moonTimes = SunCalc.getMoonTimes(now, this.lat, this.lng);

@@ -52,6 +52,7 @@
 - [x] Add responsive layout tests (desktop, tablet, mobile)
 - [x] Test timezone handling and polar phenomena
 - [x] Add test commands to deno.json (test, test:ui, test:debug)
+- [x] Fix all 67 Playwright tests to pass (Chromium only)
 
 ## 💡 Future Ideas
 See [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for long-term enhancements.

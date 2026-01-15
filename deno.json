@@ -5,7 +5,8 @@
     "test": "npx playwright test",
     "test:ui": "npx playwright test --ui",
     "test:debug": "npx playwright test --debug",
-    "test:headed": "npx playwright test --headed"
+    "test:headed": "npx playwright test --headed",
+    "test:report": "npx playwright show-report"
   },
   "compilerOptions": {
     "lib": ["deno.window", "dom"]

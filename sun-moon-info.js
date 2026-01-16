@@ -822,8 +822,7 @@ class SunMoonInfo extends HTMLElement {
       "☀️",
       window.t("sunInfo"),
       content,
-      window.t("sunInfoDesc") ||
-        "Sun times and daylight duration for your location."
+      this.getDynamicInfoDescription('sunInfo')
     );
   }
 
@@ -851,7 +850,7 @@ class SunMoonInfo extends HTMLElement {
       "🌕",
       window.t("moonInfo"),
       content,
-      window.t("moonInfoDesc") || "Moon rise and set times for your location."
+      this.getDynamicInfoDescription('moonInfo')
     );
   }
 
@@ -1101,6 +1100,34 @@ class SunMoonInfo extends HTMLElement {
     return window.t("newMoon");
   }
 
+  // Get golden hour times
+  getGoldenHourTimes() {
+    if (!this.sunData) {
+      return {
+        morningStart: null,
+        morningEnd: null,
+        eveningStart: null,
+        eveningEnd: null
+      };
+    }
+
+    // Morning golden hour: sunrise to goldenHourEnd
+    // Evening golden hour: goldenHour to sunset
+    return {
+      morningStart: this.sunData.sunrise,
+      morningEnd: this.sunData.goldenHourEnd,
+      eveningStart: this.sunData.goldenHour,
+      eveningEnd: this.sunData.sunset
+    };
+  }
+
+  // Format time range as "HH:MM - HH:MM"
+  formatTimeRange(startDate, endDate) {
+    const start = this.formatTime(startDate);
+    const end = this.formatTime(endDate);
+    return `${start} - ${end}`;
+  }
+
   // Generate OpenStreetMap Static Map URL
   getMapboxUrl() {
     if (!this.lat || !this.lng) {
@@ -1294,29 +1321,34 @@ class SunMoonInfo extends HTMLElement {
        <div class="feature-detail">${
          this.moonData ? Math.round(this.moonData.illumination * 100) : 0
        }% ${window.t("illuminated")}</div>`,
-        window.t("moonPhaseInfo")
+        this.getDynamicInfoDescription('moonPhase')
       )
     );
 
     // Golden Hour
+    const goldenHourData = this.getGoldenHourTimes();
     fragment.appendChild(
       this.renderFeatureCard(
         "goldenHour",
-        "✨",
+        "🌅",
         window.t("goldenHour"),
-        `<div class="feature-value">${
-          this.sunData ? this.formatTime(this.sunData.goldenHour) : "--:--"
-        } - ${
-          this.sunData ? this.formatTime(this.sunData.sunset) : "--:--"
-        }</div>
-       <div class="feature-detail">${window.t("evening")}</div>
-       <div class="feature-value">${
-         this.sunData ? this.formatTime(this.sunData.sunrise) : "--:--"
-       } - ${
-          this.sunData ? this.formatTime(this.sunData.goldenHourEnd) : "--:--"
-        }</div>
-       <div class="feature-detail">${window.t("morning")}</div>`,
-        window.t("goldenHourInfo")
+        `<table class="info-table">
+          <tr>
+            <td class="info-label">${window.t("morningGoldenHour")}</td>
+            <td class="info-value">${this.formatTimeRange(
+              goldenHourData.morningStart,
+              goldenHourData.morningEnd
+            )}</td>
+          </tr>
+          <tr>
+            <td class="info-label">${window.t("eveningGoldenHour")}</td>
+            <td class="info-value">${this.formatTimeRange(
+              goldenHourData.eveningStart,
+              goldenHourData.eveningEnd
+            )}</td>
+          </tr>
+        </table>`,
+        this.getDynamicInfoDescription('goldenHour')
       )
     );
 
@@ -1342,7 +1374,7 @@ class SunMoonInfo extends HTMLElement {
            ? `<div class="feature-detail" style="margin-top: 8px;">${elevationText}</div>`
            : ""
        }`,
-        window.t("sunElevationInfo")
+        this.getDynamicInfoDescription('sunElevation')
       )
     );
 
@@ -1360,7 +1392,7 @@ class SunMoonInfo extends HTMLElement {
        </div>
        <div class="feature-value">${sunriseAz}°</div>
        <div class="feature-detail">${window.t("azimuth")}</div>`,
-        window.t("compassInfo")
+        this.getDynamicInfoDescription('compass')
       )
     );
 
@@ -1385,11 +1417,168 @@ class SunMoonInfo extends HTMLElement {
        <div class="feature-detail" style="margin-top: 8px;">${
          uvData.recommendation
        }</div>`,
-        window.t("uvIndexInfo")
+        this.getDynamicInfoDescription('uvIndex')
       )
     );
 
     return fragment;
+  }
+
+  // Generate dynamic info descriptions with actual values
+  getDynamicInfoDescription(featureKey) {
+    // Map feature keys to their description translation keys
+    const descKeyMap = {
+      'sunInfo': 'sunInfoDesc',
+      'moonInfo': 'moonInfoDesc',
+      'moonPhase': 'moonPhaseInfo',
+      'goldenHour': 'goldenHourInfo',
+      'sunElevation': 'sunElevationInfo',
+      'compass': 'compassInfo',
+      'uvIndex': 'uvIndexInfo',
+      'datePicker': 'datePickerInfo'
+    };
+    
+    // Get base description using the correct translation key
+    const descKey = descKeyMap[featureKey] || (featureKey + 'Info');
+    const baseDesc = window.t(descKey) || '';
+    
+    // Add actual values based on feature type
+    let dynamicPart = '';
+    
+    switch(featureKey) {
+      case 'sunInfo':
+        if (this.sunData) {
+          const sunrise = this.formatTime(this.sunData.sunrise);
+          const sunset = this.formatTime(this.sunData.sunset);
+          const duration = this.sunData.daylightDuration;
+          if (window.currentLanguage === 'da') {
+            dynamicPart = ` I dag f.eks. står solen op kl. ${sunrise} og går ned kl. ${sunset}. Dagslængden er ${duration}.`;
+          } else if (window.currentLanguage === 'de') {
+            dynamicPart = ` Heute zum Beispiel geht die Sonne um ${sunrise} auf und um ${sunset} unter. Die Tageslänge beträgt ${duration}.`;
+          } else if (window.currentLanguage === 'es') {
+            dynamicPart = ` Hoy por ejemplo, el sol sale a las ${sunrise} y se pone a las ${sunset}. La duración del día es ${duration}.`;
+          } else if (window.currentLanguage === 'zh') {
+            dynamicPart = ` 例如，今天太阳于${sunrise}升起，于${sunset}落下。日照时长为${duration}。`;
+          } else {
+            dynamicPart = ` For example today, the sun rises at ${sunrise} and sets at ${sunset}. The daylight duration is ${duration}.`;
+          }
+        }
+        break;
+        
+      case 'moonInfo':
+        if (this.moonData) {
+          const moonrise = this.formatTime(this.moonData.rise);
+          const moonset = this.formatTime(this.moonData.set);
+          if (window.currentLanguage === 'da') {
+            dynamicPart = ` I dag f.eks. står månen op kl. ${moonrise} og går ned kl. ${moonset}.`;
+          } else if (window.currentLanguage === 'de') {
+            dynamicPart = ` Heute zum Beispiel geht der Mond um ${moonrise} auf und um ${moonset} unter.`;
+          } else if (window.currentLanguage === 'es') {
+            dynamicPart = ` Hoy por ejemplo, la luna sale a las ${moonrise} y se pone a las ${moonset}.`;
+          } else if (window.currentLanguage === 'zh') {
+            dynamicPart = ` 例如，今天月亮于${moonrise}升起，于${moonset}落下。`;
+          } else {
+            dynamicPart = ` For example today, the moon rises at ${moonrise} and sets at ${moonset}.`;
+          }
+        }
+        break;
+        
+      case 'moonPhase':
+        if (this.moonData) {
+          const phaseName = this.getMoonPhaseName();
+          const illumination = Math.round(this.moonData.illumination * 100);
+          if (window.currentLanguage === 'da') {
+            dynamicPart = ` Lige nu er månen i fasen ${phaseName} med ${illumination}% belysning.`;
+          } else if (window.currentLanguage === 'de') {
+            dynamicPart = ` Derzeit befindet sich der Mond in der Phase ${phaseName} mit ${illumination}% Beleuchtung.`;
+          } else if (window.currentLanguage === 'es') {
+            dynamicPart = ` Actualmente la luna está en fase ${phaseName} con ${illumination}% de iluminación.`;
+          } else if (window.currentLanguage === 'zh') {
+            dynamicPart = ` 目前月相为${phaseName}，照明度为${illumination}%。`;
+          } else {
+            dynamicPart = ` Currently the moon is in ${phaseName} phase with ${illumination}% illumination.`;
+          }
+        }
+        break;
+        
+      case 'goldenHour':
+        const goldenHourData = this.getGoldenHourTimes();
+        if (goldenHourData) {
+          const morningRange = this.formatTimeRange(goldenHourData.morningStart, goldenHourData.morningEnd);
+          const eveningRange = this.formatTimeRange(goldenHourData.eveningStart, goldenHourData.eveningEnd);
+          if (window.currentLanguage === 'da') {
+            dynamicPart = ` I dag er den gyldne time om morgenen ${morningRange} og om aftenen ${eveningRange}.`;
+          } else if (window.currentLanguage === 'de') {
+            dynamicPart = ` Heute ist die goldene Stunde am Morgen ${morningRange} und am Abend ${eveningRange}.`;
+          } else if (window.currentLanguage === 'es') {
+            dynamicPart = ` Hoy la hora dorada es por la mañana ${morningRange} y por la tarde ${eveningRange}.`;
+          } else if (window.currentLanguage === 'zh') {
+            dynamicPart = ` 今天的黄金时刻是早上${morningRange}和傍晚${eveningRange}。`;
+          } else {
+            dynamicPart = ` Today the golden hour is in the morning ${morningRange} and in the evening ${eveningRange}.`;
+          }
+        }
+        break;
+        
+      case 'sunElevation':
+        if (this.sunData) {
+          const now = new Date();
+          const pos = SunCalc.getPosition(now, this.lat, this.lng);
+          const currentAltitude = Math.round((pos.altitude * 180) / Math.PI);
+          if (window.currentLanguage === 'da') {
+            dynamicPart = ` Lige nu er solens højde ${currentAltitude}° over horisonten.`;
+          } else if (window.currentLanguage === 'de') {
+            dynamicPart = ` Derzeit beträgt die Sonnenhöhe ${currentAltitude}° über dem Horizont.`;
+          } else if (window.currentLanguage === 'es') {
+            dynamicPart = ` Actualmente la elevación del sol es ${currentAltitude}° sobre el horizonte.`;
+          } else if (window.currentLanguage === 'zh') {
+            dynamicPart = ` 目前太阳高度为地平线以上${currentAltitude}°。`;
+          } else {
+            dynamicPart = ` Currently the sun's elevation is ${currentAltitude}° above the horizon.`;
+          }
+        }
+        break;
+        
+      case 'compass':
+        if (this.sunData) {
+          const azimuth = Math.round((this.sunData.azimuth * 180) / Math.PI + 180);
+          if (window.currentLanguage === 'da') {
+            dynamicPart = ` Lige nu er solens azimut ${azimuth}°.`;
+          } else if (window.currentLanguage === 'de') {
+            dynamicPart = ` Derzeit beträgt das Sonnenazimut ${azimuth}°.`;
+          } else if (window.currentLanguage === 'es') {
+            dynamicPart = ` Actualmente el azimut del sol es ${azimuth}°.`;
+          } else if (window.currentLanguage === 'zh') {
+            dynamicPart = ` 目前太阳方位角为${azimuth}°。`;
+          } else {
+            dynamicPart = ` Currently the sun's azimuth is ${azimuth}°.`;
+          }
+        }
+        break;
+        
+      case 'uvIndex':
+        const uvData = this.calculateUVIndex();
+        if (uvData) {
+          if (window.currentLanguage === 'da') {
+            dynamicPart = ` Lige nu er UV-indekset ${uvData.index} (${uvData.level}). ${uvData.recommendation}`;
+          } else if (window.currentLanguage === 'de') {
+            dynamicPart = ` Derzeit beträgt der UV-Index ${uvData.index} (${uvData.level}). ${uvData.recommendation}`;
+          } else if (window.currentLanguage === 'es') {
+            dynamicPart = ` Actualmente el índice UV es ${uvData.index} (${uvData.level}). ${uvData.recommendation}`;
+          } else if (window.currentLanguage === 'zh') {
+            dynamicPart = ` 目前紫外线指数为${uvData.index}（${uvData.level}）。${uvData.recommendation}`;
+          } else {
+            dynamicPart = ` Currently the UV index is ${uvData.index} (${uvData.level}). ${uvData.recommendation}`;
+          }
+        }
+        break;
+        
+      case 'datePicker':
+        // Date picker doesn't need dynamic values, use base description
+        return baseDesc;
+    }
+    
+    return baseDesc + dynamicPart;
   }
 
   // Render individual feature card with tabs using custom elements
@@ -1609,7 +1798,7 @@ class SunMoonInfo extends HTMLElement {
          <div class="feature-detail">${
            this.moonData ? Math.round(this.moonData.illumination * 100) : 0
          }% ${window.t("illuminated")}</div>`,
-          window.t("moonPhaseDesc") || "Current moon phase and illumination percentage."
+          this.getDynamicInfoDescription('moonPhase')
         );
       } else if (feature === 'sunElevation') {
         newCard = this.renderFeatureCard(
@@ -1617,7 +1806,7 @@ class SunMoonInfo extends HTMLElement {
           "📊",
           window.t("sunElevation"),
           this.renderSunElevationChart(),
-          window.t("sunElevationDesc") || "24-hour sun elevation chart."
+          this.getDynamicInfoDescription('sunElevation')
         );
       } else if (feature === 'goldenHour') {
         const goldenHourData = this.getGoldenHourTimes();
@@ -1641,7 +1830,7 @@ class SunMoonInfo extends HTMLElement {
               )}</td>
             </tr>
           </table>`,
-          window.t("goldenHourDesc") || "Best times for photography with golden light."
+          this.getDynamicInfoDescription('goldenHour')
         );
       } else if (feature === 'compass') {
         newCard = this.renderFeatureCard(
@@ -1649,7 +1838,7 @@ class SunMoonInfo extends HTMLElement {
           "🧭",
           window.t("compass"),
           this.renderCompass(),
-          window.t("compassDesc") || "Sun position and direction."
+          this.getDynamicInfoDescription('compass')
         );
       } else if (feature === 'uvIndex') {
         newCard = this.renderFeatureCard(
@@ -1657,7 +1846,7 @@ class SunMoonInfo extends HTMLElement {
           "☀️",
           window.t("uvIndex"),
           this.renderUVIndex(),
-          window.t("uvIndexDesc") || "UV index and sun protection recommendations."
+          this.getDynamicInfoDescription('uvIndex')
         );
       }
       

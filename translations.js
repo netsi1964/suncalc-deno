@@ -22,6 +22,8 @@ const translations = {
     // Features
     moonPhase: 'Månefase',
     goldenHour: 'Gyldne Time',
+    morningGoldenHour: 'Morgen',
+    eveningGoldenHour: 'Aften',
     sunElevation: 'Sol Elevation',
     compass: 'Solens Retning',
     uvIndex: 'UV-Indeks',
@@ -133,6 +135,8 @@ const translations = {
     // Features
     moonPhase: 'Moon Phase',
     goldenHour: 'Golden Hour',
+    morningGoldenHour: 'Morning',
+    eveningGoldenHour: 'Evening',
     sunElevation: 'Sun Elevation',
     compass: 'Sun Direction',
     uvIndex: 'UV Index',
@@ -240,6 +244,8 @@ const translations = {
     // Features
     moonPhase: 'Mondphase',
     goldenHour: 'Goldene Stunde',
+    morningGoldenHour: 'Morgen',
+    eveningGoldenHour: 'Abend',
     sunElevation: 'Sonnenhöhe',
     compass: 'Sonnenrichtung',
     uvIndex: 'UV-Index',
@@ -349,6 +355,8 @@ const translations = {
     // Features
     moonPhase: '月相',
     goldenHour: '黄金时刻',
+    morningGoldenHour: '早晨',
+    eveningGoldenHour: '傍晚',
     sunElevation: '太阳高度',
     compass: '太阳方向',
     skyGradient: '天空渐变',
@@ -453,6 +461,8 @@ const translations = {
     loadingGraph: 'Cargando gráfico...',
     moonPhase: 'Fase lunar',
     goldenHour: 'Hora dorada',
+    morningGoldenHour: 'Mañana',
+    eveningGoldenHour: 'Tarde',
     sunElevation: 'Elevación solar',
     compass: 'Dirección del sol',
     uvIndex: 'Índice UV',

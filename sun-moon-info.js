@@ -1031,6 +1031,8 @@ class SunMoonInfo extends HTMLElement {
 
     this.sunData.diffFromShortest = formatDiff(diffFromShortest);
     this.sunData.diffFromLongest = formatDiff(diffFromLongest);
+    this.sunData.diffFromShortestMs = diffFromShortest;
+    this.sunData.diffFromLongestMs = diffFromLongest;
 
     // Get moon times and phase - use the same noonUTC date for consistency
     const moonTimes = SunCalc.getMoonTimes(noonUTC, this.lat, this.lng);
@@ -1045,6 +1047,18 @@ class SunMoonInfo extends HTMLElement {
       azimuth: moonPos.azimuth,
       altitude: moonPos.altitude,
     };
+  }
+
+  // Calculate daylight difference from shortest or longest day
+  calculateDaylightDiff(type) {
+    if (!this.sunData) return 0;
+    
+    if (type === 'shortest') {
+      return this.sunData.diffFromShortestMs || 0;
+    } else if (type === 'longest') {
+      return this.sunData.diffFromLongestMs || 0;
+    }
+    return 0;
   }
 
   // Format time to HH:MM in the location's timezone
@@ -1451,16 +1465,34 @@ class SunMoonInfo extends HTMLElement {
           const sunrise = this.formatTime(this.sunData.sunrise);
           const sunset = this.formatTime(this.sunData.sunset);
           const duration = this.sunData.daylightDuration;
+          
+          // Calculate differences for comparison text
+          const diffShortestMs = this.calculateDaylightDiff('shortest');
+          const diffLongestMs = this.calculateDaylightDiff('longest');
+          const diffShortestMin = Math.abs(Math.floor(diffShortestMs / (1000 * 60)));
+          const diffLongestHours = Math.abs(Math.floor(diffLongestMs / (1000 * 60 * 60)));
+          const diffLongestMin = Math.abs(Math.floor((diffLongestMs % (1000 * 60 * 60)) / (1000 * 60)));
+          
           if (window.currentLanguage === 'da') {
-            dynamicPart = ` I dag f.eks. står solen op kl. ${sunrise} og går ned kl. ${sunset}. Dagslængden er ${duration}.`;
+            const moreOrLess = diffShortestMs >= 0 ? 'minutter mere' : 'minutter mindre';
+            const comparisonText = ` Du får i dag ${diffShortestMin} ${moreOrLess} dagslys end den korteste dag, men i forhold til årets længste dag er dagen i dag ${diffLongestHours} timer ${diffLongestMin > 0 ? `og ${diffLongestMin} minutter ` : ''}kortere.`;
+            dynamicPart = ` I dag f.eks. står solen op kl. ${sunrise} og går ned kl. ${sunset}. Dagslængden er ${duration}.${comparisonText}`;
           } else if (window.currentLanguage === 'de') {
-            dynamicPart = ` Heute zum Beispiel geht die Sonne um ${sunrise} auf und um ${sunset} unter. Die Tageslänge beträgt ${duration}.`;
+            const moreOrLess = diffShortestMs >= 0 ? 'Minuten mehr' : 'Minuten weniger';
+            const comparisonText = ` Heute bekommen Sie ${diffShortestMin} ${moreOrLess} Tageslicht als am kürzesten Tag, aber im Vergleich zum längsten Tag des Jahres ist der heutige Tag ${diffLongestHours} Stunden ${diffLongestMin > 0 ? `und ${diffLongestMin} Minuten ` : ''}kürzer.`;
+            dynamicPart = ` Heute zum Beispiel geht die Sonne um ${sunrise} auf und um ${sunset} unter. Die Tageslänge beträgt ${duration}.${comparisonText}`;
           } else if (window.currentLanguage === 'es') {
-            dynamicPart = ` Hoy por ejemplo, el sol sale a las ${sunrise} y se pone a las ${sunset}. La duración del día es ${duration}.`;
+            const moreOrLess = diffShortestMs >= 0 ? 'minutos más' : 'minutos menos';
+            const comparisonText = ` Hoy recibe ${diffShortestMin} ${moreOrLess} luz del día que el día más corto, pero en comparación con el día más largo del año, hoy es ${diffLongestHours} horas ${diffLongestMin > 0 ? `y ${diffLongestMin} minutos ` : ''}más corto.`;
+            dynamicPart = ` Hoy por ejemplo, el sol sale a las ${sunrise} y se pone a las ${sunset}. La duración del día es ${duration}.${comparisonText}`;
           } else if (window.currentLanguage === 'zh') {
-            dynamicPart = ` 例如，今天太阳于${sunrise}升起，于${sunset}落下。日照时长为${duration}。`;
+            const moreOrLess = diffShortestMs >= 0 ? '分钟更多' : '分钟更少';
+            const comparisonText = ` 今天您比最短的一天获得${diffShortestMin} ${moreOrLess}日照时间，但与一年中最长的一天相比，今天要短${diffLongestHours}小时${diffLongestMin > 0 ? `${diffLongestMin}分钟` : ''}。`;
+            dynamicPart = ` 例如，今天太阳于${sunrise}升起，于${sunset}落下。日照时长为${duration}。${comparisonText}`;
           } else {
-            dynamicPart = ` For example today, the sun rises at ${sunrise} and sets at ${sunset}. The daylight duration is ${duration}.`;
+            const moreOrLess = diffShortestMs >= 0 ? 'minutes more' : 'minutes less';
+            const comparisonText = ` Today you get ${diffShortestMin} ${moreOrLess} daylight than the shortest day, but compared to the year's longest day, today is ${diffLongestHours} hours ${diffLongestMin > 0 ? `and ${diffLongestMin} minutes ` : ''}shorter.`;
+            dynamicPart = ` For example today, the sun rises at ${sunrise} and sets at ${sunset}. The daylight duration is ${duration}.${comparisonText}`;
           }
         }
         break;

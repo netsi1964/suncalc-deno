@@ -111,7 +111,10 @@ const translations = {
     locationSearchHint: 'Prøv at søge med bynavn, land eller landekode. Eksempler:\n• "København, Danmark"\n• "Paris, France"\n• "New York, USA"',
     locationSearchError: 'Fejl under søgning',
     technicalError: 'Teknisk fejl',
-    gpsError: 'Kunne ikke hente GPS-position'
+    gpsError: 'Kunne ikke hente GPS-position',
+    daylightComparison: 'Du får i dag {diffMinutes} {moreOrLess} dagslys end den korteste dag, men i forhold til årets længste dag er dagen i dag {hoursShort} timer kortere',
+    moreDaylight: 'minutter mere',
+    lessDaylight: 'minutter mindre'
   },
   en: {
     title: '☀️ Sun & Moon Information 🌙',
@@ -222,7 +225,10 @@ const translations = {
     locationSearchHint: 'Try searching with city name, country or country code. Examples:\n• "Copenhagen, Denmark"\n• "Paris, France"\n• "New York, USA"',
     locationSearchError: 'Search error',
     technicalError: 'Technical error',
-    gpsError: 'Could not get GPS position'
+    gpsError: 'Could not get GPS position',
+    daylightComparison: 'Today you get {diffMinutes} {moreOrLess} daylight than the shortest day, but compared to the year\'s longest day, today is {hoursShort} hours shorter',
+    moreDaylight: 'minutes more',
+    lessDaylight: 'minutes less'
   },
   de: {
     title: '☀️ Sonnen- & Mondinformationen 🌙',
@@ -331,7 +337,10 @@ const translations = {
     locationSearchHint: 'Versuchen Sie die Suche mit Stadtname, Land oder Ländercode. Beispiele:\n• "Kopenhagen, Dänemark"\n• "Paris, Frankreich"\n• "New York, USA"',
     locationSearchError: 'Suchfehler',
     technicalError: 'Technischer Fehler',
-    gpsError: 'GPS-Position konnte nicht abgerufen werden'
+    gpsError: 'GPS-Position konnte nicht abgerufen werden',
+    daylightComparison: 'Heute bekommen Sie {diffMinutes} {moreOrLess} Tageslicht als am kürzesten Tag, aber im Vergleich zum längsten Tag des Jahres ist der heutige Tag {hoursShort} Stunden kürzer',
+    moreDaylight: 'Minuten mehr',
+    lessDaylight: 'Minuten weniger'
   },
   zh: {
     title: '☀️ 太阳和月亮信息 🌙',
@@ -441,7 +450,10 @@ const translations = {
     locationSearchHint: '尝试使用城市名称、国家或国家代码搜索。示例：\n• "哥本哈根，丹麦"\n• "巴黎，法国"\n• "纽约，美国"',
     locationSearchError: '搜索错误',
     technicalError: '技术错误',
-    gpsError: '无法获取GPS位置'
+    gpsError: '无法获取GPS位置',
+    daylightComparison: '今天您比最短的一天获得{diffMinutes} {moreOrLess}日照时间，但与一年中最长的一天相比，今天要短{hoursShort}小时',
+    moreDaylight: '分钟更多',
+    lessDaylight: '分钟更少'
   },
   es: {
     title: '☀️ Información del Sol y la Luna 🌙',
@@ -542,7 +554,10 @@ const translations = {
     locationSearchHint: 'Intente buscar con nombre de ciudad, país o código de país. Ejemplos:\n• "Copenhague, Dinamarca"\n• "París, Francia"\n• "Nueva York, EE.UU."',
     locationSearchError: 'Error de búsqueda',
     technicalError: 'Error técnico',
-    gpsError: 'No se pudo obtener la posición GPS'
+    gpsError: 'No se pudo obtener la posición GPS',
+    daylightComparison: 'Hoy recibe {diffMinutes} {moreOrLess} luz del día que el día más corto, pero en comparación con el día más largo del año, hoy es {hoursShort} horas más corto',
+    moreDaylight: 'minutos más',
+    lessDaylight: 'minutos menos'
   }
 };
 

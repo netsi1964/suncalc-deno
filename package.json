@@ -1,6 +1,6 @@
 {
   "name": "suncalc-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A web application that displays real-time sun and moon information using vanilla JavaScript Custom Elements.",
   "main": "electron/main.cjs",
   "scripts": {

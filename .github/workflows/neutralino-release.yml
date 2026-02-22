@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Fetch Neutralino Client Libraries (CRITICAL FIX)
-        run: npx @neutralinojs/neu update
+        run: npx @neutralinojs/neu update || (sleep 10 && npx @neutralinojs/neu update)
 
       - name: Build Standalone Neutralino Executable
         run: npx @neutralinojs/neu build --release --embed-resources

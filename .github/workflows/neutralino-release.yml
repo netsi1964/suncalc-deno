@@ -26,6 +26,9 @@ jobs:
       - name: Fetch Neutralino Client Libraries (CRITICAL FIX)
         run: npx @neutralinojs/neu update || (sleep 10 && npx @neutralinojs/neu update)
 
+      - name: Prebuild (copy web files to resources/)
+        run: npm run neutralino:prebuild
+
       - name: Build Standalone Neutralino Executable
         run: npx @neutralinojs/neu build --release --embed-resources
 
@@ -41,6 +44,9 @@ jobs:
           mv "dist/$APP_NAME/${APP_NAME}-mac_universal" "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/MacOS/$APP_NAME-macOS"
           chmod +x "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/MacOS/$APP_NAME-macOS"
 
+          # Copy app icon
+          cp "resources/icons/SunCalc.icns" "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/Resources/"
+
           # Create Info.plist
           cat <<EOF > "dist/$APP_NAME/$APP_NAME-macOS.app/Contents/Info.plist"
           <?xml version="1.0" encoding="UTF-8"?>
@@ -53,6 +59,8 @@ jobs:
             <string>com.netsi.suncalc</string>
             <key>CFBundleName</key>
             <string>$APP_NAME</string>
+            <key>CFBundleIconFile</key>
+            <string>SunCalc</string>
             <key>CFBundleShortVersionString</key>
             <string>1.0.0</string>
             <key>NSHighResolutionCapable</key>

@@ -23,6 +23,17 @@ class DatePicker extends HTMLElement {
 
   connectedCallback() {
     this.render();
+    
+    // Listen for language changes
+    this.languageChangeHandler = () => this.render();
+    window.addEventListener('languagechange', this.languageChangeHandler);
+  }
+
+  disconnectedCallback() {
+    // Clean up language change listener
+    if (this.languageChangeHandler) {
+      window.removeEventListener('languagechange', this.languageChangeHandler);
+    }
   }
 
   isSameDay(date1, date2) {
@@ -107,8 +118,8 @@ class DatePicker extends HTMLElement {
   }
 
   render() {
-    const months = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
-    const weekdays = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
+    const months = window.t('months') || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const weekdays = window.t('weekdays') || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     
     const currentMonth = months[this.viewDate.getMonth()];
     const currentYear = this.viewDate.getFullYear();
@@ -256,7 +267,7 @@ class DatePicker extends HTMLElement {
         <div class="header">
           <div class="month-year">${currentMonth} ${currentYear}</div>
           <div class="nav-buttons">
-            <button class="today-btn" id="today-btn">I dag</button>
+            <button class="today-btn" id="today-btn">${window.t('today')}</button>
             <button class="nav-btn" id="prev-btn">◀</button>
             <button class="nav-btn" id="next-btn">▶</button>
           </div>

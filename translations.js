@@ -100,6 +100,7 @@ const translations = {
     shareButton: 'Del',
     shareTitle: 'Del denne lokation',
     linkCopied: 'Link kopieret!',
+    copyFailed: 'Kopiering fejlede',
     gpsTooltip: 'Brug din enheds GPS til at finde din aktuelle placering',
     todayTooltip: 'Spring til dagens dato',
     searchTooltip: 'Søg efter en placering hvor som helst i verden',
@@ -114,7 +115,11 @@ const translations = {
     gpsError: 'Kunne ikke hente GPS-position',
     daylightComparison: 'Du får i dag {diffMinutes} {moreOrLess} dagslys end den korteste dag, men i forhold til årets længste dag er dagen i dag {hoursShort} timer kortere',
     moreDaylight: 'minutter mere',
-    lessDaylight: 'minutter mindre'
+    lessDaylight: 'minutter mindre',
+    
+    // Calendar
+    months: ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'],
+    weekdays: ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn']
   },
   en: {
     title: '☀️ Sun & Moon Information 🌙',
@@ -214,6 +219,7 @@ const translations = {
     shareButton: 'Share',
     shareTitle: 'Share this location',
     linkCopied: 'Link copied!',
+    copyFailed: 'Copy failed',
     gpsTooltip: 'Use your device GPS to detect current location',
     todayTooltip: 'Jump to today\'s date',
     searchTooltip: 'Search for any location worldwide',
@@ -228,7 +234,11 @@ const translations = {
     gpsError: 'Could not get GPS position',
     daylightComparison: 'Today you get {diffMinutes} {moreOrLess} daylight than the shortest day, but compared to the year\'s longest day, today is {hoursShort} hours shorter',
     moreDaylight: 'minutes more',
-    lessDaylight: 'minutes less'
+    lessDaylight: 'minutes less',
+    
+    // Calendar
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   },
   de: {
     title: '☀️ Sonnen- & Mondinformationen 🌙',
@@ -326,6 +336,7 @@ const translations = {
     shareButton: 'Teilen',
     shareTitle: 'Diesen Standort teilen',
     linkCopied: 'Link kopiert!',
+    copyFailed: 'Kopieren fehlgeschlagen',
     gpsTooltip: 'Verwenden Sie das GPS Ihres Geräts, um Ihren aktuellen Standort zu ermitteln',
     todayTooltip: 'Zum heutigen Datum springen',
     searchTooltip: 'Suchen Sie nach einem beliebigen Standort weltweit',
@@ -340,7 +351,11 @@ const translations = {
     gpsError: 'GPS-Position konnte nicht abgerufen werden',
     daylightComparison: 'Heute bekommen Sie {diffMinutes} {moreOrLess} Tageslicht als am kürzesten Tag, aber im Vergleich zum längsten Tag des Jahres ist der heutige Tag {hoursShort} Stunden kürzer',
     moreDaylight: 'Minuten mehr',
-    lessDaylight: 'Minuten weniger'
+    lessDaylight: 'Minuten weniger',
+    
+    // Calendar
+    months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    weekdays: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
   },
   zh: {
     title: '☀️ 太阳和月亮信息 🌙',
@@ -395,6 +410,7 @@ const translations = {
     goldenHourDesc: '金色时光摄影的最佳时间。',
     compassDesc: '太阳位置和方向。',
     uvIndexDesc: '紫外线指数和防晒建议。',
+    uvIndexInfo: '紫外线指数根据太阳高度估算来自太阳的紫外线辐射强度。数值越高，表示晒伤风险越大。在高紫外线水平时使用防晒霜、太阳镜和帽子。',
     moonPhaseInfo: '显示当前月相的视觉表示。月球经历从新月到满月再返回的8个阶段，周期约为29.5天。',
     goldenHourInfo: '黄金时刻每天出现两次 - 日出后不久和日落前。在此期间，太阳低垂于地平线上，创造出柔和、温暖、漫射的光线，非常适合摄影。',
     sunElevationInfo: '显示太阳在一天中相对于地平线的高度角。图表显示太阳如何升起、在正午达到峰值并落下。更高的高度意味着更强烈的阳光。',
@@ -439,6 +455,7 @@ const translations = {
     shareButton: '分享',
     shareTitle: '分享此位置',
     linkCopied: '链接已复制！',
+    copyFailed: '复制失败',
     gpsTooltip: '使用您的设备GPS检测当前位置',
     todayTooltip: '跳转到今天的日期',
     searchTooltip: '搜索世界上任何位置',
@@ -453,7 +470,11 @@ const translations = {
     gpsError: '无法获取GPS位置',
     daylightComparison: '今天您比最短的一天获得{diffMinutes} {moreOrLess}日照时间，但与一年中最长的一天相比，今天要短{hoursShort}小时',
     moreDaylight: '分钟更多',
-    lessDaylight: '分钟更少'
+    lessDaylight: '分钟更少',
+    
+    // Calendar
+    months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+    weekdays: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
   },
   es: {
     title: '☀️ Información del Sol y la Luna 🌙',
@@ -543,6 +564,7 @@ const translations = {
     shareButton: 'Compartir',
     shareTitle: 'Compartir esta ubicación',
     linkCopied: '¡Enlace copiado!',
+    copyFailed: 'Copia fallida',
     gpsTooltip: 'Use el GPS de su dispositivo para detectar la ubicación actual',
     todayTooltip: 'Saltar a la fecha de hoy',
     searchTooltip: 'Buscar cualquier ubicación en todo el mundo',
@@ -557,7 +579,11 @@ const translations = {
     gpsError: 'No se pudo obtener la posición GPS',
     daylightComparison: 'Hoy recibe {diffMinutes} {moreOrLess} luz del día que el día más corto, pero en comparación con el día más largo del año, hoy es {hoursShort} horas más corto',
     moreDaylight: 'minutos más',
-    lessDaylight: 'minutos menos'
+    lessDaylight: 'minutos menos',
+    
+    // Calendar
+    months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    weekdays: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
   }
 };
 
@@ -567,8 +593,53 @@ window.t = (key, lang = 'en') => {
   return translations[locale]?.[key] || translations['en'][key] || key;
 };
 
-// Set default language
-window.currentLanguage = localStorage.getItem('language') || 'en';
+// Detect browser/system language
+function detectLanguage() {
+  // Check localStorage first (user preference)
+  const savedLang = localStorage.getItem('language');
+  if (savedLang && translations[savedLang]) {
+    return savedLang;
+  }
+  
+  // Detect from browser/system
+  const browserLangs = navigator.languages || [navigator.language || navigator.userLanguage];
+  
+  // Map of language codes to our supported languages
+  const supportedLangs = {
+    'da': 'da',      // Danish
+    'da-DK': 'da',
+    'en': 'en',      // English
+    'en-US': 'en',
+    'en-GB': 'en',
+    'de': 'de',      // German
+    'de-DE': 'de',
+    'de-AT': 'de',
+    'de-CH': 'de',
+    'zh': 'zh',      // Chinese
+    'zh-CN': 'zh',
+    'zh-TW': 'zh',
+    'zh-HK': 'zh'
+  };
+  
+  // Try to find a match in browser languages
+  for (const browserLang of browserLangs) {
+    // Try exact match first
+    if (supportedLangs[browserLang]) {
+      return supportedLangs[browserLang];
+    }
+    // Try language code without region (e.g., 'da' from 'da-DK')
+    const langCode = browserLang.split('-')[0];
+    if (supportedLangs[langCode]) {
+      return supportedLangs[langCode];
+    }
+  }
+  
+  // Default to English
+  return 'en';
+}
+
+// Set default language with auto-detection
+window.currentLanguage = detectLanguage();
 
 // Language change event
 window.setLanguage = (lang) => {

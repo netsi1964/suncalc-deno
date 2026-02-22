@@ -208,22 +208,55 @@ class SunMoonInfo extends HTMLElement {
         
         // Create and store new handler
         this.shareBtnHandler = async () => {
-          const url = window.location.href;
+          // Build shareable URL with current location parameters
+          const params = new URLSearchParams();
+          if (this.lat && this.lng) {
+            params.set('lat', this.lat);
+            params.set('lng', this.lng);
+          }
+          if (this.selectedDate) {
+            params.set('date', this.selectedDate);
+          }
+          const baseUrl = 'https://netsi1964.github.io/suncalc-deno/';
+          const url = params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+          
+          const originalText = shareBtn.textContent;
+          
+          // Try clipboard API first, then fallback to execCommand
+          let copied = false;
+          
           try {
             await navigator.clipboard.writeText(url);
-            // Show feedback
-            const originalText = shareBtn.textContent;
+            copied = true;
+          } catch (err) {
+            // Fallback: Use textarea + execCommand (works in Electron)
+            try {
+              const textarea = document.createElement('textarea');
+              textarea.value = url;
+              textarea.style.position = 'fixed';
+              textarea.style.opacity = '0';
+              document.body.appendChild(textarea);
+              textarea.select();
+              copied = document.execCommand('copy');
+              document.body.removeChild(textarea);
+            } catch (fallbackErr) {
+              console.error("Fallback copy failed:", fallbackErr);
+            }
+          }
+          
+          // Show feedback
+          if (copied) {
             shareBtn.textContent = "✓ " + window.t("linkCopied");
             shareBtn.style.background = "rgba(40, 180, 99, 0.8)";
-            setTimeout(() => {
-              shareBtn.textContent = originalText;
-              shareBtn.style.background = "";
-            }, 2000);
-          } catch (err) {
-            console.error("Failed to copy:", err);
-            // Fallback: select and copy
-            prompt(window.t("shareTitle") + ":", url);
+          } else {
+            shareBtn.textContent = "✗ " + window.t("copyFailed");
+            shareBtn.style.background = "rgba(231, 76, 60, 0.8)";
           }
+          
+          setTimeout(() => {
+            shareBtn.textContent = originalText;
+            shareBtn.style.background = "";
+          }, 2000);
         };
         
         shareBtn.addEventListener("click", this.shareBtnHandler);
@@ -259,7 +292,7 @@ class SunMoonInfo extends HTMLElement {
         todayBtn.addEventListener("click", this.todayBtnHandler);
       }
 
-      // GPS button
+      // GPS button (only in non-Electron environments)
       const gpsBtn = this.shadowRoot.querySelector("#gps-btn");
       if (gpsBtn) {
         // Remove old listener if exists
@@ -268,40 +301,44 @@ class SunMoonInfo extends HTMLElement {
         }
 
         this.gpsBtnHandler = async () => {
-          if (!navigator.geolocation) {
-            alert(window.t("gpsError"));
-            return;
-          }
-
           gpsBtn.textContent = "⏳ ...";
           gpsBtn.disabled = true;
 
+          // Try GPS with timeout, fallback to IP-based location
           try {
-            const position = await new Promise((resolve, reject) => {
-              navigator.geolocation.getCurrentPosition(resolve, reject);
-            });
+            const position = await Promise.race([
+              new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                  timeout: 5000,
+                  enableHighAccuracy: true
+                });
+              }),
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('GPS timeout')), 5000)
+              )
+            ]);
 
             this.lat = position.coords.latitude;
             this.lng = position.coords.longitude;
             this.locationName = await this.reverseGeocode(this.lat, this.lng);
-
-            this.calculateSunMoonData();
-            this.render();
-            this.initializeMap();
-            this.attachChartTooltip();
-            this.attachLanguageSelector();
-            this.attachLocationControls();
-            this.attachFeatureEventListeners();
-            this.saveState();
-
-            gpsBtn.textContent = "🌍 " + window.t("getMyLocation");
-            gpsBtn.disabled = false;
-          } catch (error) {
-            console.error("GPS error:", error);
-            alert(window.t("gpsError"));
-            gpsBtn.textContent = "🌍 " + window.t("getMyLocation");
-            gpsBtn.disabled = false;
+            this.timezoneName = await this.getTimezoneForLocation(this.lat, this.lng);
+          } catch (gpsError) {
+            // GPS failed, fallback to IP-based location
+            await this.detectLocation();
           }
+
+          // Update UI with new location
+          this.calculateSunMoonData();
+          this.render();
+          this.initializeMap();
+          this.attachChartTooltip();
+          this.attachLanguageSelector();
+          this.attachLocationControls();
+          this.attachFeatureEventListeners();
+          this.saveState();
+
+          gpsBtn.textContent = "🌍 " + window.t("getMyLocation");
+          gpsBtn.disabled = false;
         };
 
         gpsBtn.addEventListener("click", this.gpsBtnHandler);
@@ -534,6 +571,10 @@ class SunMoonInfo extends HTMLElement {
     this.calculateSunMoonData();
     this.render();
     this.initializeMap();
+    this.attachChartTooltip();
+    this.attachLanguageSelector();
+    this.attachLocationControls();
+    this.attachFeatureEventListeners();
   }
 
   // Update only data sections without full re-render (preserves event listeners)
@@ -839,7 +880,9 @@ class SunMoonInfo extends HTMLElement {
         <tr>
           <td class="info-label">${window.t("moonset")}</td>
           <td class="info-value">${
-            this.moonData ? this.formatTime(this.moonData.set) : "--:--"
+            this.moonData
+              ? this.formatTime(this.moonData.set) + (this.moonData.setNextDay ? ' <span title="næste dag" style="font-size:0.75em;opacity:0.6">+1</span>' : '')
+              : "--:--"
           }</td>
         </tr>
       </table>
@@ -925,7 +968,9 @@ class SunMoonInfo extends HTMLElement {
         <tr>
           <td class="info-label">${window.t("moonset")}</td>
           <td class="info-value">${
-            this.moonData ? this.formatTime(this.moonData.set) : "--:--"
+            this.moonData
+              ? this.formatTime(this.moonData.set) + (this.moonData.setNextDay ? ' <span title="næste dag" style="font-size:0.75em;opacity:0.6">+1</span>' : '')
+              : "--:--"
           }</td>
         </tr>
       </table>
@@ -1039,9 +1084,23 @@ class SunMoonInfo extends HTMLElement {
     const moonIllumination = SunCalc.getMoonIllumination(noonUTC);
     const moonPos = SunCalc.getMoonPosition(noonUTC, this.lat, this.lng);
 
+    // If moon doesn't set today (near full moon this can happen), check next day
+    let moonSet = moonTimes.set;
+    let moonSetNextDay = false;
+    if (!moonSet) {
+      const tomorrow = new Date(noonUTC);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowMoonTimes = SunCalc.getMoonTimes(tomorrow, this.lat, this.lng);
+      if (tomorrowMoonTimes.set) {
+        moonSet = tomorrowMoonTimes.set;
+        moonSetNextDay = true;
+      }
+    }
+
     this.moonData = {
       rise: moonTimes.rise,
-      set: moonTimes.set,
+      set: moonSet,
+      setNextDay: moonSetNextDay,
       phase: moonIllumination.phase,
       illumination: moonIllumination.fraction,
       azimuth: moonPos.azimuth,
@@ -1182,7 +1241,7 @@ class SunMoonInfo extends HTMLElement {
         segments.push({
           type: "daylight",
           percent: 100,
-          color: "#3498db",
+          color: "#ff9500",
         });
       }
       return segments;
@@ -1238,7 +1297,7 @@ class SunMoonInfo extends HTMLElement {
     segments.push({
       type: "daylight",
       percent: sunsetPercent - sunrisePercent,
-      color: "#3498db",
+      color: "#ff9500",
     });
 
     // Evening twilight (sunset to dusk)
@@ -1285,6 +1344,11 @@ class SunMoonInfo extends HTMLElement {
     }
 
     timelineGraph.setAttribute("lng", this.lng.toString());
+    
+    // Pass current date to timeline for "now" marker
+    if (this.currentDate) {
+      timelineGraph.setAttribute("current-date", this.currentDate.toISOString());
+    }
 
     return timelineGraph;
   }
@@ -1501,16 +1565,17 @@ class SunMoonInfo extends HTMLElement {
         if (this.moonData) {
           const moonrise = this.formatTime(this.moonData.rise);
           const moonset = this.formatTime(this.moonData.set);
+          const nextDay = this.moonData.setNextDay;
           if (window.currentLanguage === 'da') {
-            dynamicPart = ` I dag f.eks. står månen op kl. ${moonrise} og går ned kl. ${moonset}.`;
+            dynamicPart = ` I dag f.eks. står månen op kl. ${moonrise} og går ned kl. ${moonset}${nextDay ? ' (+1 dag)' : ''}.`;
           } else if (window.currentLanguage === 'de') {
-            dynamicPart = ` Heute zum Beispiel geht der Mond um ${moonrise} auf und um ${moonset} unter.`;
+            dynamicPart = ` Heute zum Beispiel geht der Mond um ${moonrise} auf und um ${moonset}${nextDay ? ' (+1 Tag)' : ''} unter.`;
           } else if (window.currentLanguage === 'es') {
-            dynamicPart = ` Hoy por ejemplo, la luna sale a las ${moonrise} y se pone a las ${moonset}.`;
+            dynamicPart = ` Hoy por ejemplo, la luna sale a las ${moonrise} y se pone a las ${moonset}${nextDay ? ' (+1 día)' : ''}.`;
           } else if (window.currentLanguage === 'zh') {
-            dynamicPart = ` 例如，今天月亮于${moonrise}升起，于${moonset}落下。`;
+            dynamicPart = ` 例如，今天月亮于${moonrise}升起，于${moonset}${nextDay ? '（次日）' : ''}落下。`;
           } else {
-            dynamicPart = ` For example today, the moon rises at ${moonrise} and sets at ${moonset}.`;
+            dynamicPart = ` For example today, the moon rises at ${moonrise} and sets at ${moonset}${nextDay ? ' (+1 day)' : ''}.`;
           }
         }
         break;
@@ -2510,11 +2575,13 @@ class SunMoonInfo extends HTMLElement {
             "searchLocation"
           )}</div>
           <div class="location-buttons">
+            ${!navigator.userAgent.toLowerCase().includes('electron') ? `
             <button id="gps-btn" class="gps-button">
               🌍 ${window.t("getMyLocation")}
             </button>
+            ` : ''}
             <button id="today-btn" class="today-button">
-              📅 I dag
+              📅 ${window.t("today")}
             </button>
           </div>
           <div class="search-container">

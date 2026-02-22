@@ -12,6 +12,9 @@
 - [ ] Consider caching location detection result
 
 ## ✅ Completed
+- [x] Remove Deno dependency - replaced with http-server for local development
+- [x] Add Electron build scripts and GitHub Release download instructions for macOS, Windows, and Linux
+- [x] Add Electron desktop app wrapper for running the project directly on desktop
 - [x] Create AGENTS.md and README.md
 - [x] Add Deno server and HTML scaffold (main.ts, index.html, deno.json)
 - [x] Add sun-moon-info custom element with Shadow DOM

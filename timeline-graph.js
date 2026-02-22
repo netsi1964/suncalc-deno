@@ -3,10 +3,66 @@ class TimelineGraph extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this.updateInterval = null;
   }
 
   static get observedAttributes() {
-    return ['dawn', 'sunrise', 'sunset', 'dusk', 'polar-condition', 'lng'];
+    return ['dawn', 'sunrise', 'sunset', 'dusk', 'polar-condition', 'lng', 'current-date'];
+  }
+
+  disconnectedCallback() {
+    // Clean up interval when component is removed
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+  }
+
+  // Get current hour in local time (considering timezone offset)
+  getCurrentLocalHour() {
+    const now = new Date();
+    const lng = parseFloat(this.getAttribute('lng') || '0');
+    const timezoneOffsetHours = Math.round(lng / 15);
+    const localDate = new Date(now.getTime() + (timezoneOffsetHours * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
+    
+    const hours = localDate.getUTCHours();
+    const minutes = localDate.getUTCMinutes();
+    const seconds = localDate.getUTCSeconds();
+    
+    return hours + (minutes / 60) + (seconds / 3600);
+  }
+
+  // Check if selected date is today
+  isToday() {
+    const currentDate = this.getAttribute('current-date');
+    if (!currentDate) return true; // Default to showing marker
+    
+    const selectedDate = new Date(currentDate);
+    const today = new Date();
+    
+    return selectedDate.getFullYear() === today.getFullYear() &&
+           selectedDate.getMonth() === today.getMonth() &&
+           selectedDate.getDate() === today.getDate();
+  }
+
+  // Update the position of the "now" marker
+  updateNowMarker() {
+    if (!this.isToday()) {
+      // Hide marker if not today
+      const marker = this.shadowRoot.querySelector('.now-marker');
+      if (marker) {
+        marker.style.display = 'none';
+      }
+      return;
+    }
+
+    const currentHour = this.getCurrentLocalHour();
+    const percentage = (currentHour / 24) * 100;
+    
+    const marker = this.shadowRoot.querySelector('.now-marker');
+    if (marker) {
+      marker.style.display = 'block';
+      marker.style.left = `${percentage}%`;
+    }
   }
 
   attributeChangedCallback() {
@@ -69,7 +125,7 @@ class TimelineGraph extends HTMLElement {
       segments.push({
         type: 'daylight',
         percent: 100,
-        color: '#3498db'
+        color: '#ff9500'
       });
       return segments;
     }
@@ -102,7 +158,7 @@ class TimelineGraph extends HTMLElement {
     segments.push({
       type: 'daylight',
       percent: sunsetPercent - sunrisePercent,
-      color: '#3498db'
+      color: '#ff9500'
     });
 
     segments.push({
@@ -277,6 +333,46 @@ class TimelineGraph extends HTMLElement {
           background: rgba(52, 152, 219, 0.95);
         }
 
+        .now-marker {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 2px;
+          background: rgba(255, 50, 50, 0.8);
+          z-index: 100;
+          pointer-events: none;
+          box-shadow: 0 0 6px rgba(255, 50, 50, 0.6);
+        }
+
+        .now-marker::before {
+          content: '';
+          position: absolute;
+          top: -6px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 0;
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-top: 8px solid rgba(255, 50, 50, 0.8);
+        }
+
+        .now-marker::after {
+          content: attr(data-time);
+          position: absolute;
+          top: -24px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(255, 50, 50, 0.9);
+          color: white;
+          padding: 2px 6px;
+          border-radius: 3px;
+          font-size: 10px;
+          font-weight: bold;
+          white-space: nowrap;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -289,7 +385,9 @@ class TimelineGraph extends HTMLElement {
         }
       </style>
 
-      <div class="timeline-bar"></div>
+      <div class="timeline-bar">
+        <div class="now-marker" data-time=""></div>
+      </div>
       <div class="timeline-labels">
         ${labelsHtml}
       </div>
@@ -342,6 +440,33 @@ class TimelineGraph extends HTMLElement {
       
       barContainer.appendChild(segmentDiv);
     });
+
+    // Update "now" marker
+    this.updateNowMarker();
+    
+    // Update current time display on marker
+    const marker = this.shadowRoot.querySelector('.now-marker');
+    if (marker && this.isToday()) {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      marker.setAttribute('data-time', `${hours}:${minutes}`);
+    }
+
+    // Set up auto-update every 10 seconds
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+    this.updateInterval = setInterval(() => {
+      this.updateNowMarker();
+      const marker = this.shadowRoot.querySelector('.now-marker');
+      if (marker && this.isToday()) {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        marker.setAttribute('data-time', `${hours}:${minutes}`);
+      }
+    }, 10000); // Update every 10 seconds
   }
 }
 

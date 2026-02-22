@@ -40,7 +40,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'deno task start',
+    command: 'npx http-server -p 8000 -c-1',
     url: 'http://localhost:8000',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,

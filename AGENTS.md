@@ -30,8 +30,8 @@ Every custom element must implement these internal sections:
 ```
 
 ### Runtime & Dependencies
-- **Runtime**: Deno only (no Node.js)
-- **Run Command**: `deno run --allow-net --allow-read main.ts`
+- **Runtime**: Static files served via http-server (Node.js for development)
+- **Run Command**: `npm start` (starts http-server on port 8000)
 - **No Build Step**: Serve vanilla JS directly
 - **External Dependencies**:
   - SunCalc.js (CDN): `https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js`
@@ -175,7 +175,7 @@ These features must NOT be implemented:
 
 ### Testing Checklist
 Before committing each feature, verify:
-- [ ] Component renders without errors in Deno
+- [ ] Component renders without errors
 - [ ] Shadow DOM isolates styles (no global leakage)
 - [ ] Works with custom `lat`/`lng` attributes
 - [ ] Responsive at 768px breakpoint
@@ -204,7 +204,7 @@ Each feature should be independently committable and functional:
 10. ✅ Testing validation (all criteria met)
 
 ## Acceptance Criteria (from PRD)
-1. App renders without errors in Deno
+1. App renders without errors
 2. Component loads and shows correct location
 3. Sun and moon info are accurate for the day
 4. Vertical bar graph is readable and properly aligned

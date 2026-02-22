@@ -7,25 +7,18 @@ Real-time sun and moon data for any location on Earth. Drag the map marker, pick
 | Option | How |
 |--------|-----|
 | 🌐 **Browser (no install)** | [netsi1964.github.io/suncalc-deno](https://netsi1964.github.io/suncalc-deno/) |
-| 🖥️ **Desktop app (download)** | [github.com/netsi1964/suncalc-deno/releases](https://github.com/netsi1964/suncalc-deno/releases) |
+| 🖥️ **Desktop app — macOS** | [github.com/netsi1964/suncalc-deno/releases](https://github.com/netsi1964/suncalc-deno/releases) |
 | 🛠️ **Run locally** | See [Development](#development) below |
 
 ---
 
 ## Desktop App
 
-Download the latest release for your platform from **[Releases](https://github.com/netsi1964/suncalc-deno/releases)**.
+Download the latest macOS release from **[Releases](https://github.com/netsi1964/suncalc-deno/releases)**.
 
-Two desktop builds are available per release:
+Built with [Neutralino.js](https://neutralino.js.org/) — ~2 MB, uses the system WebView instead of bundling a full browser.
 
-| Build | Size | Platforms | Notes |
-|-------|------|-----------|-------|
-| **Electron** | ~150 MB | macOS, Windows, Linux | Full Chromium runtime included |
-| **Neutralino** | ~2 MB | macOS | Lightweight, uses system WebView |
-
-### Installation
-
-**macOS (both builds)**
+### Installation — macOS
 
 > Because this project is open-source and not signed with a paid Apple Developer Certificate, macOS Gatekeeper will quarantine the downloaded app. Remove the quarantine once with this Terminal command:
 >
@@ -34,15 +27,6 @@ Two desktop builds are available per release:
 > ```
 >
 > Tip: type `xattr -cr ` (with a trailing space), then drag the `.app` from Finder into Terminal — it will paste the path automatically. Press Enter, then double-click the app normally.
-
-**Windows (Electron)**
-
-Download and run `SunCalc-Setup-<version>.exe`.
-
-**Linux (Electron)**
-
-Download `.AppImage`, `.deb`, or `.tar.gz` from the release page.
-For AppImage: `chmod +x SunCalc-<version>.AppImage && ./SunCalc-<version>.AppImage`
 
 ---
 
@@ -79,12 +63,6 @@ npm start
 # → http://localhost:8000
 ```
 
-### Run as Electron app
-
-```bash
-npm run electron
-```
-
 ### Run as Neutralino app (macOS)
 
 ```bash
@@ -118,8 +96,7 @@ npm run release:major   # 1.0.0 → 2.0.0
 - **Astronomy**: [SunCalc.js](https://github.com/mourner/suncalc) by Vladimir Agafonkin
 - **Maps**: [Leaflet](https://leafletjs.com/) + OpenStreetMap
 - **Location**: [IPInfo](https://ipinfo.io)
-- **Desktop (heavy)**: [Electron](https://www.electronjs.org/) + electron-builder
-- **Desktop (light)**: [Neutralino.js](https://neutralino.js.org/)
+- **Desktop**: [Neutralino.js](https://neutralino.js.org/)
 - **CI/CD**: GitHub Actions
 
 ---
